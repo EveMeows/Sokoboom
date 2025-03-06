@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\Sokoboom.Pipelines\bin\Release\net8.0-windows\publish\Sokoboom.Pipelines.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -24,4 +25,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Entities/Player.png
+
+#begin Maps/Intro.csv
+/importer:TileMapImporter
+/processor:PassThroughProcessor
+/build:Maps/Intro.csv
 

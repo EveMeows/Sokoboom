@@ -7,9 +7,6 @@ namespace Sokoboom.Entities;
 
 public class Player(Sokoban window) : Entity
 {
-    #region Constants
-    #endregion
-
     public override void LoadContent()
     {
         this.Components.Add(
@@ -38,7 +35,5 @@ public class Player(Sokoban window) : Entity
             this.Position.Y += window.CellSize;
     }
 
-    public override void Draw(SpriteBatch batch, GameTime time)
-    {
-    }
+    public override void Draw(SpriteBatch batch, GameTime time) {}
 }
