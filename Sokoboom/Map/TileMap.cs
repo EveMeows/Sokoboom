@@ -14,13 +14,16 @@ public class TileMap
 
     private Dictionary<int, Texture2D> textures = new Dictionary<int, Texture2D>();
 
-
     public TileMap(int[,] data, Sokoban window)
     {
         this.data = data;
         this.window = window;
-        this.textures.Add(1, this.window.Content.Load<Texture2D>("Entities/Player"));
+        this.textures.Add(1, this.window.Content.Load<Texture2D>("Entities/Wall"));
     }
+
+    public int IDAtPosition(int x, int y) => this.data[x, y];
+
+    public int IDAtPosition(Vector2 pos) => this.data[(int)pos.X, (int)pos.Y];
 
     public void Draw(SpriteBatch batch)
     {
@@ -35,4 +38,6 @@ public class TileMap
             }
         }
     }
+
+    public int[,] TileData => this.data;
 }

@@ -4,6 +4,7 @@ using MonoGayme.Core.Input;
 using MonoGayme.Core.States;
 using MonoGayme.Core.Utilities;
 using MonoGayme.Extensions;
+using Sokoboom.Input;
 using Sokoboom.States;
 
 namespace Sokoboom;
@@ -16,7 +17,7 @@ public class Sokoban : Game
     public Renderer Renderer { get; private set; } = null!;
     public StateContext Context { get; private set; }
 
-    public Input Input { get; private set; }
+    public Keybinds Keybinds { get; private set; }
 
     public Vector2 GameSize { get; private set; }
 
@@ -40,7 +41,7 @@ public class Sokoban : Game
 
         this.graphics.SetWindowSize(this.GameSize * 7);
 
-        this.Input = new Input();
+        this.Keybinds = new Keybinds();
     }
 
     protected override void LoadContent()
