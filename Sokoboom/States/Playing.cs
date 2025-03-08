@@ -14,7 +14,9 @@ public class Playing(Sokoban window, MapData map) : State
 {
     #region Fields
     private readonly EntityController entities = new EntityController();
+
     private readonly UIController ui = new UIController(false);
+    private readonly UIController pause = new UIController(false);
 
     private TileMap activeMap = null!;
 
@@ -34,6 +36,10 @@ public class Playing(Sokoban window, MapData map) : State
     private float time = 0;
 
     private int undos = 0;
+
+    private bool paused = false;
+    private Rectangle screenRect;
+    private Texture2D pixel;
     #endregion
 
     private void Undo()
@@ -235,11 +241,133 @@ public class Playing(Sokoban window, MapData map) : State
             }
         );
 
+        this.ui.Add(
+            new TextButton(
+                this.font,
+                "pause",
+                new Vector2(this.baseX + 19, window.GameSize.Y - 22),
+                Color.White
+            )
+            { 
+                OnClick = (self) => {
+                    this.paused = true;    
+                },
+
+                OnMouseEnter = (self) => {
+                    self.Colour = Color.Gold;
+                },
+
+                OnMouseExit = (self) => {
+                    self.Colour = Color.White;
+                }
+            }
+        );
+
+
+        // Title
+        float uiWidth = window.GameSize.X - this.baseX;
+
         string title = $"-{map.Name}-";
+        Vector2 titleDim = this.font.MeasureString(title);
         Vector2 size = this.font.MeasureString(title);
         this.ui.Add(
-            new Label(title, Color.White, this.font, new Vector2(this.baseX, 2))    
+            new Label(title, Color.White, this.font, new Vector2((int)(this.baseX + ((uiWidth - titleDim.X) / 2)), 2))    
         );
+    }
+
+    private void CreatePause()
+    {
+        this.screenRect = new Rectangle(0, 0, (int)window.GameSize.X, (int)window.GameSize.Y);
+
+        this.pixel = new Texture2D(window.GraphicsDevice, 1, 1);
+        this.pixel.SetData([Color.Black]);
+
+        string pause = "PAUSED";
+        Vector2 pauseDim = this.font.MeasureString(pause);
+        this.pause.Add(
+            new Label(
+                pause,
+                Color.White,
+                this.font,
+                new Vector2((int)((window.GameSize.X - pauseDim.X) / 2), 2)
+            )
+        );
+
+        string menu = "main menu";
+        Vector2 menuDim = this.font.MeasureString(menu);
+        this.pause.Add(
+            new TextButton(
+                this.font,
+                menu,
+                new Vector2((int)(window.GameSize.X - menuDim.X) / 2, 23),
+                Color.White
+            )
+            { 
+                OnClick = (self) => {
+                    window.Context.SwitchState(new MainMenu(window));    
+                },
+
+                OnMouseEnter = (self) => {
+                    self.Colour = Color.Gold;
+                },
+
+                OnMouseExit = (self) => {
+                    self.Colour = Color.White;
+                }
+
+            }
+        );
+
+        string quit = "quit game";
+        Vector2 quitDim = this.font.MeasureString(quit);
+        this.pause.Add(
+            new TextButton(
+                this.font,
+                quit,
+                new Vector2((int)(window.GameSize.X - quitDim.X) / 2, 35),
+                Color.White
+            )
+            { 
+                OnClick = (self) => {
+                    window.Exit();    
+                },
+
+                OnMouseEnter = (self) => {
+                    self.Colour = Color.Gold;
+                },
+
+                OnMouseExit = (self) => {
+                    self.Colour = Color.White;
+                }
+
+            }
+        );
+
+        string resume = "resume";
+        Vector2 resumeDim = this.font.MeasureString(resume);
+        this.pause.Add(
+            new TextButton(
+                this.font,
+                resume,
+                new Vector2((int)(window.GameSize.X - resumeDim.X) / 2, 47),
+                Color.White
+            )
+            { 
+                OnClick = (self) => {
+                    this.paused = false; 
+                },
+
+                OnMouseEnter = (self) => {
+                    self.Colour = Color.Gold;
+                },
+
+                OnMouseExit = (self) => {
+                    self.Colour = Color.White;
+                }
+
+            }
+        );
+
     }
 
     public override void LoadContent()
@@ -248,12 +376,25 @@ public class Playing(Sokoban window, MapData map) : State
         this.baseX = window.MapSize.X * window.CellSize + 2;
 
         this.CreateMap(new TileMap(map.Data, window));
+
         this.CreateUI();
+        this.CreatePause();
     }
 
     public override void Update(GameTime time)
     {
         float delta = (float)time.ElapsedGameTime.TotalMilliseconds;
+
+        if (window.Keybinds.Pause.IsPressed())
+        {
+            this.paused = !this.paused;
+        }
+
+        if (this.paused)
+        {
+            this.pause.Update(window.Renderer.GetVirtualMousePosition());
+            return;
+        }
 
         this.entities.Update(window.GraphicsDevice, time);
         this.ui.Update(window.Renderer.GetVirtualMousePosition());
@@ -282,8 +423,9 @@ public class Playing(Sokoban window, MapData map) : State
     public override void Draw(GameTime time, SpriteBatch batch)
     {
         window.GraphicsDevice.Clear(Color.SkyBlue);
-        
+
         batch.Begin();
+        { 
             this.entities.Draw(batch, time);
             this.activeMap.Draw(batch);
 
@@ -291,6 +433,13 @@ public class Playing(Sokoban window, MapData map) : State
             batch.DrawString(this.font, $"{this.undos} undos", new Vector2(this.baseX, 26), Color.White);
 
             this.ui.Draw(batch);
+
+            if (this.paused)
+            {
+                batch.Draw(this.pixel, this.screenRect, Color.White * 0.8f);
+                this.pause.Draw(batch);
+            }
+        }
         batch.End();
     }
 }

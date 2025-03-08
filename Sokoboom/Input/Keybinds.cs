@@ -13,6 +13,8 @@ public class Keybinds
 
     public VirtualButton Undo = new VirtualButton();
 
+    public VirtualButton Pause = new VirtualButton();
+
     public Keybinds()
     {
         this.Left.AddKeyboard(Keys.A, Keys.Left);
@@ -22,5 +24,7 @@ public class Keybinds
         this.Down.AddKeyboard(Keys.S, Keys.Down);
 
         this.Undo.AddKeyboard(Keys.U);
+
+        this.Pause.AddKeyboard(Keys.P, Keys.Escape);
     }
 }
