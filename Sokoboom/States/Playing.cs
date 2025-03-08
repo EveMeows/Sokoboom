@@ -208,7 +208,7 @@ public class Playing(Sokoban window, MapData map) : State
             )
             { 
                 OnClick = (self) => {
-                    return;
+                    window.Context.SwitchState(new Playing(window, window.Data[window.ActiveMap]));    
                 },
 
                 OnMouseEnter = (self) => {
