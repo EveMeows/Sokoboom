@@ -42,99 +42,7 @@ public class Playing(Sokoban window, MapData map) : State
     private Texture2D pixel;
     #endregion
 
-    private void Undo()
-    { 
-        History? history = this.history.LastOrDefault();
-        if (history is not null)
-        {
-            this.player.Position = history.PlayerPosition;
-            this.box.Position = history.BoxPosition;
-
-            if (history != this.history[0])
-            {
-                this.history.Remove(history);
-                this.undos++;
-            }
-        }
-    }
-
-    private void OnPlayerMoved(object? sender, PlayerMovedEventArgs args)
-    {
-        Vector2 playerGrid = args.Position / window.CellSize;
-        Vector2 boxGrid = this.box.Position / window.CellSize;
-
-        if (playerGrid == boxGrid)
-        {
-            switch (args.Direction)
-            {
-                case Direction.Left:
-                    boxGrid.X -= 1;
-                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
-                    {
-                        this.box.Position = boxGrid * window.CellSize;
-                        break;
-                    }
-
-                    this.player.Position.X += window.CellSize;
-                    this.player.Moves--;
-                    return;
-                
-                case Direction.Right:
-                    boxGrid.X += 1;
-                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
-                    {
-                        this.box.Position = boxGrid * window.CellSize;
-                        break;
-                    }
-
-                    this.player.Position.X -= window.CellSize;
-                    this.player.Moves--;
-                    return;
-
-                case Direction.Up:
-                    boxGrid.Y -= 1;
-                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
-                    {
-                        this.box.Position = boxGrid * window.CellSize;
-                        break;
-                    }
-
-                    this.player.Position.Y += window.CellSize;
-                    this.player.Moves--;
-                    return;
-               
-                case Direction.Down:
-                    boxGrid.Y += 1;
-                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
-                    { 
-                        this.box.Position = boxGrid * window.CellSize;
-                        break;
-                    }
-
-                    this.player.Position.Y -= window.CellSize;
-                    this.player.Moves--;
-                    return;
-            }
-
-            Vector2 goalGrid = this.goal.Position / window.CellSize;
-            if (boxGrid == goalGrid)
-            {
-                // End the game.
-                if (window.ActiveMap == window.Data.Count - 1)
-                {
-                    window.Context.SwitchState(new Winner(window));
-                    return;
-                }
-
-                // Continue to the next map
-                window.ActiveMap++;
-                window.Context.SwitchState(new Playing(window, window.Data[window.ActiveMap]));
-            }
-        }
-
-        this.history.Add(new History(args.Position, this.box.Position));
-    }
-
+    #region Creation
     private void CreateMap(TileMap @new)
     {
         this.activeMap = @new;
@@ -263,7 +171,6 @@ public class Playing(Sokoban window, MapData map) : State
             }
         );
 
-
         // Title
         float uiWidth = window.GameSize.X - this.baseX;
 
@@ -368,6 +275,100 @@ public class Playing(Sokoban window, MapData map) : State
             }
         );
 
+    }
+    #endregion
+
+    private void Undo()
+    { 
+        History? history = this.history.LastOrDefault();
+        if (history is not null)
+        {
+            this.player.Position = history.PlayerPosition;
+            this.box.Position = history.BoxPosition;
+
+            if (history != this.history[0])
+            {
+                this.history.Remove(history);
+                this.undos++;
+            }
+        }
+    }
+
+    private void OnPlayerMoved(object? sender, PlayerMovedEventArgs args)
+    {
+        Vector2 playerGrid = args.Position / window.CellSize;
+        Vector2 boxGrid = this.box.Position / window.CellSize;
+
+        if (playerGrid == boxGrid)
+        {
+            switch (args.Direction)
+            {
+                case Direction.Left:
+                    boxGrid.X -= 1;
+                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
+                    {
+                        this.box.Position = boxGrid * window.CellSize;
+                        break;
+                    }
+
+                    this.player.Position.X += window.CellSize;
+                    this.player.Moves--;
+                    return;
+                
+                case Direction.Right:
+                    boxGrid.X += 1;
+                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
+                    {
+                        this.box.Position = boxGrid * window.CellSize;
+                        break;
+                    }
+
+                    this.player.Position.X -= window.CellSize;
+                    this.player.Moves--;
+                    return;
+
+                case Direction.Up:
+                    boxGrid.Y -= 1;
+                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
+                    {
+                        this.box.Position = boxGrid * window.CellSize;
+                        break;
+                    }
+
+                    this.player.Position.Y += window.CellSize;
+                    this.player.Moves--;
+                    return;
+               
+                case Direction.Down:
+                    boxGrid.Y += 1;
+                    if (this.activeMap.IDAtPosition(boxGrid) != 1)
+                    { 
+                        this.box.Position = boxGrid * window.CellSize;
+                        break;
+                    }
+
+                    this.player.Position.Y -= window.CellSize;
+                    this.player.Moves--;
+                    return;
+            }
+
+            Vector2 goalGrid = this.goal.Position / window.CellSize;
+            if (boxGrid == goalGrid)
+            {
+                // End the game.
+                if (window.ActiveMap == window.Data.Count - 1)
+                {
+                    window.Context.SwitchState(new Winner(window));
+                    return;
+                }
+
+                // Continue to the next map
+                window.ActiveMap++;
+                window.Context.SwitchState(new Playing(window, window.Data[window.ActiveMap]));
+            }
+        }
+
+        this.history.Add(new History(args.Position, this.box.Position));
     }
 
     public override void LoadContent()
