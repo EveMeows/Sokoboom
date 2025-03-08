@@ -26,6 +26,9 @@ public class Sokoban : Game
 
     public readonly float ExtraWidth = 85;
 
+    public int ActiveMap { get; set; } = 0;
+    public IReadOnlyList<MapData> Data { get; private set; }
+
     public Sokoban()
     {
         this.graphics = new GraphicsDeviceManager(this);
@@ -48,12 +51,16 @@ public class Sokoban : Game
 
     protected override void LoadContent()
     {
+        this.Data = [
+            new MapData(this.Content.Load<int[,]>("Maps/Intro"), "intro")
+        ];
+
         this.Renderer = new Renderer(
             this.GameSize,
             this.GraphicsDevice
         );
 
-        this.Context.SwitchState(new Playing(this));
+        this.Context.SwitchState(new Playing(this, this.Data[this.ActiveMap]));
 
         this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
     }

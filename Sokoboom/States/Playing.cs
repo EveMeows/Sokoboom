@@ -9,11 +9,11 @@ using Sokoboom.Map;
 
 namespace Sokoboom.States;
 
-public class Playing(Sokoban window) : State
+public class Playing(Sokoban window, MapData map) : State
 {
     #region Fields
-    private EntityController entities = new EntityController();
-    private UIController ui = new UIController(false);
+    private readonly EntityController entities = new EntityController();
+    private readonly UIController ui = new UIController(false);
 
     private TileMap activeMap = null!;
 
@@ -69,7 +69,8 @@ public class Playing(Sokoban window) : State
                     }
 
                     this.player.Position.X += window.CellSize;
-                    break;
+                    this.player.Moves--;
+                    return;
                 
                 case Direction.Right:
                     boxGrid.X += 1;
@@ -80,7 +81,8 @@ public class Playing(Sokoban window) : State
                     }
 
                     this.player.Position.X -= window.CellSize;
-                    break;
+                    this.player.Moves--;
+                    return;
 
                 case Direction.Up:
                     boxGrid.Y -= 1;
@@ -91,7 +93,8 @@ public class Playing(Sokoban window) : State
                     }
 
                     this.player.Position.Y += window.CellSize;
-                    break;
+                    this.player.Moves--;
+                    return;
                
                 case Direction.Down:
                     boxGrid.Y += 1;
@@ -102,7 +105,8 @@ public class Playing(Sokoban window) : State
                     }
 
                     this.player.Position.Y -= window.CellSize;
-                    break;
+                    this.player.Moves--;
+                    return;
             }
 
             // TODO: Checks.
@@ -111,9 +115,9 @@ public class Playing(Sokoban window) : State
         this.history.Add(new History(args.Position, this.box.Position));
     }
 
-    private void SwitchMap(TileMap next)
+    private void CreateMap(TileMap @new)
     {
-        this.activeMap = next;
+        this.activeMap = @new;
 
         this.entities.QueueRemoveAll();
 
@@ -214,20 +218,24 @@ public class Playing(Sokoban window) : State
                 OnMouseExit = (self) => {
                     self.Colour = Color.White;
                 }
-
             }
+        );
+
+        float uiWidth = window.GameSize.X - this.baseX;
+
+        string title = $"-{map.Name}-";
+        Vector2 size = this.font.MeasureString(title);
+        this.ui.Add(
+            new Label(title, Color.White, this.font, new Vector2((int)(this.baseX + (size.X - (uiWidth / 2))), 2))    
         );
     }
 
     public override void LoadContent()
     {
         this.font = window.Content.Load<SpriteFont>("Fonts/PicoEight");
-
-        int[,] data = window.Content.Load<int[,]>("Maps/Intro");
-        this.SwitchMap(new TileMap(data, window));
-
         this.baseX = window.MapSize.X * window.CellSize + 2;
 
+        this.CreateMap(new TileMap(map.Data, window));
         this.CreateUI();
     }
 
@@ -265,8 +273,8 @@ public class Playing(Sokoban window) : State
             this.entities.Draw(batch, time);
             this.activeMap.Draw(batch);
 
-            batch.DrawString(this.font, $"{this.player.Moves} moves", new Vector2(this.baseX, 2), Color.White);
-            batch.DrawString(this.font, $"{this.undos} undos", new Vector2(this.baseX, 13), Color.White);
+            batch.DrawString(this.font, $"{this.player.Moves} moves", new Vector2(this.baseX, 15), Color.White);
+            batch.DrawString(this.font, $"{this.undos} undos", new Vector2(this.baseX, 26), Color.White);
 
             this.ui.Draw(batch);
         batch.End();
