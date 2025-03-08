@@ -5,7 +5,7 @@ using MonoGayme.Core.Entities;
 using Sokoboom.Input;
 using Sokoboom.Map;
 
-namespace Sokoboom.Entities;
+namespace Sokoboom.Entities.Player;
 
 public class Player(Sokoban window, TileMap map) : Entity
 {

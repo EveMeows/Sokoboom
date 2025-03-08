@@ -52,7 +52,8 @@ public class Sokoban : Game
     protected override void LoadContent()
     {
         this.Data = [
-            new MapData(this.Content.Load<int[,]>("Maps/Intro"), "intro")
+            new MapData(this.Content.Load<int[,]>("Maps/Intro"), "intro"),
+            new MapData(this.Content.Load<int[,]>("Maps/First"), "1"),
         ];
 
         this.Renderer = new Renderer(
@@ -79,10 +80,8 @@ public class Sokoban : Game
     {
         // Outside renderer bars.
         this.GraphicsDevice.Clear(Color.Black);
-        
-        this.Renderer.Attach();
 
-        this.GraphicsDevice.Clear(Color.SkyBlue);
+        this.Renderer.Attach();
         this.Context.Draw(gameTime, this.spriteBatch);
 
         this.Renderer.DetachAndDraw(this.spriteBatch);

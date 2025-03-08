@@ -21,9 +21,9 @@ public class TileMap
         this.textures.Add(1, this.window.Content.Load<Texture2D>("Entities/Wall"));
     }
 
-    public int IDAtPosition(int x, int y) => this.data[x, y];
+    public int IDAtPosition(int x, int y) => this.data[y, x];
 
-    public int IDAtPosition(Vector2 pos) => this.data[(int)pos.X, (int)pos.Y];
+    public int IDAtPosition(Vector2 pos) => this.IDAtPosition((int)pos.X, (int)pos.Y);
 
     public void Draw(SpriteBatch batch)
     {
@@ -33,7 +33,7 @@ public class TileMap
             {
                 if (this.textures.TryGetValue(this.data[x, y], out Texture2D? texture))
                 {
-                    batch.Draw(texture, new Vector2(x, y) * this.window.CellSize, Color.White);
+                    batch.Draw(texture, new Vector2(y, x) * this.window.CellSize, Color.White);
                 }
             }
         }

@@ -3,7 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGayme.Core.Controllers;
 using MonoGayme.Core.States;
 using MonoGayme.Core.UI;
-using Sokoboom.Entities;
+using Sokoboom.Entities.Player;
+using Sokoboom.Entities.Static;
 using Sokoboom.Input;
 using Sokoboom.Map;
 
@@ -109,7 +110,20 @@ public class Playing(Sokoban window, MapData map) : State
                     return;
             }
 
-            // TODO: Checks.
+            Vector2 goalGrid = this.goal.Position / window.CellSize;
+            if (boxGrid == goalGrid)
+            {
+                // End the game.
+                if (window.ActiveMap == window.Data.Count - 1)
+                {
+                    window.Context.SwitchState(new Winner(window));
+                    return;
+                }
+
+                // Continue to the next map
+                window.ActiveMap++;
+                window.Context.SwitchState(new Playing(window, window.Data[window.ActiveMap]));
+            }
         }
 
         this.history.Add(new History(args.Position, this.box.Position));
@@ -221,12 +235,10 @@ public class Playing(Sokoban window, MapData map) : State
             }
         );
 
-        float uiWidth = window.GameSize.X - this.baseX;
-
         string title = $"-{map.Name}-";
         Vector2 size = this.font.MeasureString(title);
         this.ui.Add(
-            new Label(title, Color.White, this.font, new Vector2((int)(this.baseX + (size.X - (uiWidth / 2))), 2))    
+            new Label(title, Color.White, this.font, new Vector2(this.baseX, 2))    
         );
     }
 
@@ -269,6 +281,8 @@ public class Playing(Sokoban window, MapData map) : State
 
     public override void Draw(GameTime time, SpriteBatch batch)
     {
+        window.GraphicsDevice.Clear(Color.SkyBlue);
+        
         batch.Begin();
             this.entities.Draw(batch, time);
             this.activeMap.Draw(batch);

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGayme.Core.Components.Sprites;
 using MonoGayme.Core.Entities;
 
-namespace Sokoboom.Entities;
+namespace Sokoboom.Entities.Static;
 
 class Goal(Sokoban window) : Entity(-1)
 {

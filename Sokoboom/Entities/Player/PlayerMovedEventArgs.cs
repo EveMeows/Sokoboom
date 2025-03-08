@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Sokoboom.Input;
 
-namespace Sokoboom.Entities;
+namespace Sokoboom.Entities.Player;
 
 public class PlayerMovedEventArgs(Vector2 pos, Direction dir)
 {

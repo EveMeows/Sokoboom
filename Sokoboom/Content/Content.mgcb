@@ -72,6 +72,11 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/PicoEight.spritefont
 
+#begin Maps/First.csv
+/importer:TileMapImporter
+/processor:PassThroughProcessor
+/build:Maps/First.csv
+
 #begin Maps/Intro.csv
 /importer:TileMapImporter
 /processor:PassThroughProcessor
