@@ -23,7 +23,9 @@ public class Sokoban : Game
 
     public readonly int CellSize = 8;
     public readonly Vector2 MapSize = new Vector2(9, 9);
-        
+
+    public readonly float ExtraWidth = 85;
+
     public Sokoban()
     {
         this.graphics = new GraphicsDeviceManager(this);
@@ -35,7 +37,7 @@ public class Sokoban : Game
         this.Context = new StateContext();
 
         this.GameSize = new Vector2(
-            this.CellSize * this.MapSize.X, 
+            this.CellSize * this.MapSize.X + this.ExtraWidth,
             this.CellSize * this.MapSize.Y
         );
 

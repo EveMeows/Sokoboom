@@ -11,6 +11,8 @@ public class Player(Sokoban window, TileMap map) : Entity
 {
     public EventHandler<PlayerMovedEventArgs>? OnMoved;
 
+    public int Moves = 0;
+
     public override void LoadContent()
     {
         this.Components.Add(
@@ -31,6 +33,8 @@ public class Player(Sokoban window, TileMap map) : Entity
             { 
                 this.Position.X -= window.CellSize;
                 this.OnMoved?.Invoke(this, new PlayerMovedEventArgs(this.Position, Direction.Left));
+
+                this.Moves++;
             }
         }
         else if (window.Keybinds.Right.IsPressed())
@@ -39,6 +43,8 @@ public class Player(Sokoban window, TileMap map) : Entity
             {
                 this.Position.X += window.CellSize;
                 this.OnMoved?.Invoke(this, new PlayerMovedEventArgs(this.Position, Direction.Right));
+            
+                this.Moves++; 
             }
         }
 
@@ -49,6 +55,8 @@ public class Player(Sokoban window, TileMap map) : Entity
             {
                 this.Position.Y -= window.CellSize;
                 this.OnMoved?.Invoke(this, new PlayerMovedEventArgs(this.Position, Direction.Up));
+            
+                this.Moves++;
             }
         }
         else if (window.Keybinds.Down.IsPressed())
@@ -57,6 +65,8 @@ public class Player(Sokoban window, TileMap map) : Entity
             {
                 this.Position.Y += window.CellSize;
                 this.OnMoved?.Invoke(this, new PlayerMovedEventArgs(this.Position, Direction.Down));
+            
+                this.Moves++;
             }
         }
     }

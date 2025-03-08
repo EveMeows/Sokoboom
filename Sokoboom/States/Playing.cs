@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGayme.Core.Controllers;
 using MonoGayme.Core.States;
+using MonoGayme.Core.UI;
 using Sokoboom.Entities;
 using Sokoboom.Input;
 using Sokoboom.Map;
@@ -10,7 +11,9 @@ namespace Sokoboom.States;
 
 public class Playing(Sokoban window) : State
 {
+    #region Fields
     private EntityController entities = new EntityController();
+    private UIController ui = new UIController(false);
 
     private TileMap activeMap = null!;
 
@@ -18,8 +21,35 @@ public class Playing(Sokoban window) : State
     private Box box = null!;
     private Goal goal = null!;
 
+    private SpriteFont font = null!;
+
     private record History(Vector2 PlayerPosition, Vector2 BoxPosition);
     private List<History> history = [];
+
+    private float baseX;
+
+    private readonly float Delay = 100;
+    private bool isUndoing = false;
+    private float time = 0;
+
+    private int undos = 0;
+    #endregion
+
+    private void Undo()
+    { 
+        History? history = this.history.LastOrDefault();
+        if (history is not null)
+        {
+            this.player.Position = history.PlayerPosition;
+            this.box.Position = history.BoxPosition;
+
+            if (history != this.history[0])
+            {
+                this.history.Remove(history);
+                this.undos++;
+            }
+        }
+    }
 
     private void OnPlayerMoved(object? sender, PlayerMovedEventArgs args)
     {
@@ -141,28 +171,90 @@ public class Playing(Sokoban window) : State
         this.history.Add(new History(this.player.Position, this.box.Position));
     }
 
+    private void CreateUI()
+    { 
+        this.ui.Add(
+            new TextButton(
+                this.font,
+                "undo",
+                new Vector2(this.baseX, window.GameSize.Y - 12),
+                Color.White
+            )
+            { 
+                OnClick = (self) => {
+                    this.Undo();
+                },
+
+                OnMouseEnter = (self) => {
+                    self.Colour = Color.Gold;
+                },
+
+                OnMouseExit = (self) => {
+                    self.Colour = Color.White;
+                }
+            }
+        );
+
+        this.ui.Add(
+            new TextButton(
+                this.font,
+                "retry",
+                new Vector2(this.baseX + 43, window.GameSize.Y - 12),
+                Color.White
+            )
+            { 
+                OnClick = (self) => {
+                    return;
+                },
+
+                OnMouseEnter = (self) => {
+                    self.Colour = Color.Gold;
+                },
+
+                OnMouseExit = (self) => {
+                    self.Colour = Color.White;
+                }
+
+            }
+        );
+    }
+
     public override void LoadContent()
     {
+        this.font = window.Content.Load<SpriteFont>("Fonts/PicoEight");
+
         int[,] data = window.Content.Load<int[,]>("Maps/Intro");
         this.SwitchMap(new TileMap(data, window));
+
+        this.baseX = window.MapSize.X * window.CellSize + 2;
+
+        this.CreateUI();
     }
 
     public override void Update(GameTime time)
     {
+        float delta = (float)time.ElapsedGameTime.TotalMilliseconds;
+
         this.entities.Update(window.GraphicsDevice, time);
+        this.ui.Update(window.Renderer.GetVirtualMousePosition());
 
-        if (window.Keybinds.Undo.IsPressed())
+        if (window.Keybinds.Undo.IsDown())
         {
-            History? history = this.history.LastOrDefault();
-            if (history is not null)
-            {
-                this.player.Position = history.PlayerPosition;
-                this.box.Position = history.BoxPosition;
+            this.isUndoing = true;
+        }
+        else
+        {
+            this.time = 0;
+            this.isUndoing = false;
+        }
 
-                if (history != this.history[0])
-                {
-                    this.history.Remove(history);
-                }
+        if (this.isUndoing)
+        {
+            this.time += delta;
+            if (this.time > this.Delay)
+            {
+                this.time = 0;
+                this.Undo();
             }
         }
     }
@@ -172,6 +264,11 @@ public class Playing(Sokoban window) : State
         batch.Begin();
             this.entities.Draw(batch, time);
             this.activeMap.Draw(batch);
+
+            batch.DrawString(this.font, $"{this.player.Moves} moves", new Vector2(this.baseX, 2), Color.White);
+            batch.DrawString(this.font, $"{this.undos} undos", new Vector2(this.baseX, 13), Color.White);
+
+            this.ui.Draw(batch);
         batch.End();
     }
 }
