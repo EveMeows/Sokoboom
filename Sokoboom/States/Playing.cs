@@ -18,6 +18,9 @@ public class Playing(Sokoban window) : State
     private Box box = null!;
     private Goal goal = null!;
 
+    private record History(Vector2 PlayerPosition, Vector2 BoxPosition);
+    private List<History> history = [];
+
     private void OnPlayerMoved(object? sender, PlayerMovedEventArgs args)
     {
         Vector2 playerGrid = args.Position / window.CellSize;
@@ -71,7 +74,11 @@ public class Playing(Sokoban window) : State
                     this.player.Position.Y -= window.CellSize;
                     break;
             }
+
+            // TODO: Checks.
         }
+
+        this.history.Add(new History(args.Position, this.box.Position));
     }
 
     private void SwitchMap(TileMap next)
@@ -129,6 +136,9 @@ public class Playing(Sokoban window) : State
                 }
             }
         }
+
+        // Initial positions.
+        this.history.Add(new History(this.player.Position, this.box.Position));
     }
 
     public override void LoadContent()
@@ -140,6 +150,21 @@ public class Playing(Sokoban window) : State
     public override void Update(GameTime time)
     {
         this.entities.Update(window.GraphicsDevice, time);
+
+        if (window.Keybinds.Undo.IsPressed())
+        {
+            History? history = this.history.LastOrDefault();
+            if (history is not null)
+            {
+                this.player.Position = history.PlayerPosition;
+                this.box.Position = history.BoxPosition;
+
+                if (history != this.history[0])
+                {
+                    this.history.Remove(history);
+                }
+            }
+        }
     }
 
     public override void Draw(GameTime time, SpriteBatch batch)

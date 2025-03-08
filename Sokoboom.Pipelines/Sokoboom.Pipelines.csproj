@@ -10,7 +10,4 @@
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Sokoboom\Sokoboom.csproj" />
-  </ItemGroup>
 </Project>

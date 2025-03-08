@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Content.Pipeline;
-using Sokoboom.Map;
 using System.IO;
 
 namespace Sokoboom.Pipelines;

@@ -11,6 +11,8 @@ public class Keybinds
     public VirtualButton Up = new VirtualButton();
     public VirtualButton Down = new VirtualButton();
 
+    public VirtualButton Undo = new VirtualButton();
+
     public Keybinds()
     {
         this.Left.AddKeyboard(Keys.A, Keys.Left);
@@ -18,5 +20,7 @@ public class Keybinds
 
         this.Up.AddKeyboard(Keys.W, Keys.Up);
         this.Down.AddKeyboard(Keys.S, Keys.Down);
+
+        this.Undo.AddKeyboard(Keys.U);
     }
 }
