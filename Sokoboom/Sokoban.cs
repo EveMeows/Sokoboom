@@ -27,7 +27,9 @@ public class Sokoban : Game
     public readonly float ExtraWidth = 85;
 
     public int ActiveMap { get; set; } = 0;
-    public IReadOnlyList<MapData> Data { get; private set; }
+    public IReadOnlyList<MapData> Data { get; private set; } = [];
+
+    public string Version { get; } = "v1.0.0";
 
     public Sokoban()
     {
@@ -61,7 +63,8 @@ public class Sokoban : Game
             this.GraphicsDevice
         );
 
-        this.Context.SwitchState(new Playing(this, this.Data[this.ActiveMap]));
+        // this.Context.SwitchState(new Playing(this, this.Data[this.ActiveMap]));
+        this.Context.SwitchState(new MainMenu(this));
 
         this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
     }

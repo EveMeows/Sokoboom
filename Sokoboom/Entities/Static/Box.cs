@@ -7,6 +7,8 @@ namespace Sokoboom.Entities.Static;
 
 public class Box(Sokoban window) : Entity
 {
+    public float Speed;
+
     public override void LoadContent()
         => this.Components.Add(new Sprite(window.Content.Load<Texture2D>("Entities/Box")));
 
