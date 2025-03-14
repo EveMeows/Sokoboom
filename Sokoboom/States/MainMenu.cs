@@ -120,8 +120,7 @@ public class MainMenu(Sokoban window) : State
     {
         this.font = window.Content.Load<SpriteFont>("Fonts/PicoEight");
         this.BuildUI();
-
-
+    
         for (int i = 0; i < this.BoxCount; i++)
         {
             Box box = new Box(window);
