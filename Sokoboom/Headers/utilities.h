@@ -7,7 +7,7 @@
 
 namespace utilities
 {
-	Texture2D load_relative(const std::filesystem::path& path)
+	inline Texture2D load_relative(const std::filesystem::path& path)
 	{
 		std::filesystem::path full = GetApplicationDirectory() / path;
 		std::string legacy = full.string();
