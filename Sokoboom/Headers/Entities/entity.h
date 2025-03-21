@@ -12,4 +12,3 @@ public:
 
 	Entity(int id) : id(id) {};
 };
-

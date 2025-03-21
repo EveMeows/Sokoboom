@@ -18,4 +18,15 @@ public:
 	T* get_id(int id);
 
 	void add(std::unique_ptr<Entity> e);
+
+	void process();
+	void render();
 };
+
+inline void EntityController::process()
+{
+}
+
+inline void EntityController::render()
+{
+}

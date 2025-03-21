@@ -1,6 +1,10 @@
 #include "../../Headers/States/game.h"
 
-#include <raylib.h>
+#include "../../Headers/utilities.h"
+
+Game::Game(std::shared_ptr<GameData> data) : m_data(data)
+{
+}
 
 void Game::process()
 {
@@ -8,9 +12,5 @@ void Game::process()
 
 void Game::render()
 {
-	BeginDrawing();
-	{
-		ClearBackground(SKYBLUE);
-	}
-	EndDrawing();
+	ClearBackground(SKYBLUE);
 }
