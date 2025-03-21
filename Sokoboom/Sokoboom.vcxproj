@@ -148,6 +148,7 @@
     <ClInclude Include="Headers\map.h" />
     <ClInclude Include="Headers\States\game.h" />
     <ClInclude Include="Headers\States\state.h" />
+    <ClInclude Include="Headers\utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
@@ -156,5 +157,12 @@
     <Content Include="Content\**">
       <CopyToOutputDirectory>always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Content\Entities\box.png" />
+    <Image Include="Content\Props\wall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\Maps\intro.p8m" />
   </ItemGroup>
 </Project>
