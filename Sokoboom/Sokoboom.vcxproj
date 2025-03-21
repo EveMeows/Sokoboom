@@ -135,7 +135,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Controllers\entity_controller.cpp" />
     <ClCompile Include="Sources\main.cpp" />
+    <ClCompile Include="Sources\States\game.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\Controllers\entity_controller.h" />
+    <ClInclude Include="Headers\Controllers\state_controller.h" />
+    <ClInclude Include="Headers\Entities\entity.h" />
+    <ClInclude Include="Headers\data.h" />
+    <ClInclude Include="Headers\States\game.h" />
+    <ClInclude Include="Headers\States\state.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
