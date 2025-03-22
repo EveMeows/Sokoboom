@@ -22,11 +22,3 @@ public:
 	void process();
 	void render();
 };
-
-inline void EntityController::process()
-{
-}
-
-inline void EntityController::render()
-{
-}

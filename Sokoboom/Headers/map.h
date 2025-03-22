@@ -22,4 +22,6 @@ public:
 	Vector2 tile_size;
 
 	void draw();
+
+	void set_at_position(int x, int y, int layer, int id);
 };

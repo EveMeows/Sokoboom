@@ -143,8 +143,10 @@
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\entity_controller.h" />
     <ClInclude Include="Headers\Controllers\state_controller.h" />
+    <ClInclude Include="Headers\Entities\box.h" />
     <ClInclude Include="Headers\Entities\entity.h" />
     <ClInclude Include="Headers\data.h" />
+    <ClInclude Include="Headers\Entities\goal.h" />
     <ClInclude Include="Headers\map.h" />
     <ClInclude Include="Headers\States\game.h" />
     <ClInclude Include="Headers\States\state.h" />
@@ -157,12 +159,5 @@
     <Content Include="Content\**">
       <CopyToOutputDirectory>always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Content\Entities\box.png" />
-    <Image Include="Content\Props\wall.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Content\Maps\intro.p8m" />
   </ItemGroup>
 </Project>

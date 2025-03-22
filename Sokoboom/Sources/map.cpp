@@ -1,5 +1,4 @@
 #include "../Headers/map.h"
-
 #include "../Headers/utilities.h"
 
 #include <iostream>
@@ -15,6 +14,8 @@ Map::Map(const std::filesystem::path& path)
 	this->tile_size = Vector2(this->m_data["tile_x"], this->m_data["tile_y"]);
 
 	this->m_tiles[1] = utilities::load_relative(std::filesystem::path("Content/Props/wall.png"));
+	this->m_tiles[2] = utilities::load_relative(std::filesystem::path("Content/Entities/box.png"));
+	this->m_tiles[3] = utilities::load_relative(std::filesystem::path("Content/Entities/goal.png"));
 }
 
 void Map::draw()
@@ -35,4 +36,9 @@ void Map::draw()
 			}
 		}
 	}
+}
+
+void Map::set_at_position(int x, int y, int layer, int id)
+{
+	this->layers[layer][x][y] = id;
 }
