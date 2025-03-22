@@ -22,3 +22,36 @@ public:
 	void process();
 	void render();
 };
+
+template<typename T>
+inline T* EntityController::get_first()
+{
+	for (const std::unique_ptr<Entity>& e : this->m_entities)
+	{
+		if (T* out = dynamic_cast<T*>(e.get()))
+		{
+			return out;
+		}
+	}
+
+	return nullptr;
+}
+
+template<typename T>
+inline T* EntityController::get_id(int id)
+{
+	for (const std::unique_ptr<Entity>& e : this->m_entities)
+	{
+		if (e->id == id)
+		{
+			if (T* out = static_cast<T*>(e.get()))
+			{
+				return out;
+			}
+
+			return nullptr;
+		}
+	}
+
+	return nullptr;
+}

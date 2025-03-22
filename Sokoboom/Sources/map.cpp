@@ -2,6 +2,7 @@
 #include "../Headers/utilities.h"
 
 #include <iostream>
+#include <stdexcept>
 
 Map::Map(const std::filesystem::path& path)
 {
@@ -36,6 +37,11 @@ void Map::draw()
 			}
 		}
 	}
+}
+
+int Map::get_at_position(int x, int y, int layer)
+{
+	return this->layers[layer][x][y];
 }
 
 void Map::set_at_position(int x, int y, int layer, int id)

@@ -23,10 +23,10 @@ int main()
 	std::cout << "INFO: Game resolution: " << GameData::GAME_SIZE.x << ", " << GameData::GAME_SIZE.y << "\n";
 
 	std::shared_ptr<GameData> data = std::make_shared<GameData>();
+	Map map = Map(std::filesystem::path("Content/Maps/intro.p8m"));
+	
 	data->state_handler->set(
-		std::make_unique<Game>(
-			Game(data, Map(std::filesystem::path("Content/Maps/intro.p8m")))
-		)
+		std::make_unique<Game>(Game(data, &map))
 	);
 
 	RenderTexture2D renderer = LoadRenderTexture(GameData::GAME_SIZE.x, GameData::GAME_SIZE.y);

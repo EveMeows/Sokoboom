@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Controllers\entity_controller.cpp" />
+    <ClCompile Include="Sources\Entities\player.cpp" />
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\map.cpp" />
     <ClCompile Include="Sources\States\game.cpp" />
@@ -147,6 +148,8 @@
     <ClInclude Include="Headers\Entities\entity.h" />
     <ClInclude Include="Headers\data.h" />
     <ClInclude Include="Headers\Entities\goal.h" />
+    <ClInclude Include="Headers\Entities\player.h" />
+    <ClInclude Include="Headers\Entities\player_direction.h" />
     <ClInclude Include="Headers\map.h" />
     <ClInclude Include="Headers\States\game.h" />
     <ClInclude Include="Headers\States\state.h" />
