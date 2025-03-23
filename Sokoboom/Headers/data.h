@@ -1,13 +1,23 @@
 #pragma once
 
 #include "Controllers/state_controller.h"
+#include "map.h"
 
 #include <raylib.h>
 
 #include <memory>
 
+struct MapData
+{
+	std::string name;
+	Map map;
+};
+
 struct GameData
 {
+	int active_map_index = 0;
+	std::vector<MapData> maps;
+
 	static constexpr int TILE_SIZE = 8;
 	static constexpr int MAP_SIZE = 10;
 

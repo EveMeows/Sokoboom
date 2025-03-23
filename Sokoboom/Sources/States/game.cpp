@@ -1,13 +1,12 @@
 #include "../../Headers/States/game.h"
 #include "../../Headers/utilities.h"
 
-#include "../../Headers/Entities/box.h"
-#include "../../Headers/Entities/goal.h"
-
 #include "../../Headers/data.h"
 
 #include <cmath>
 #include <stdexcept>
+
+#include <raymath.h>
 
 static constexpr int BOX_ID = 2;
 static constexpr int GOAL_ID = 3;
@@ -25,12 +24,20 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		return;
 	}
 
-	std::cout << "INFO: Player weak link uses: " << player.use_count() << std::endl;
+	std::shared_ptr<Box> box = this->m_box.lock();
+	if (!box)
+	{
+		std::cerr << "CRITICAL: Failed to get box.\n";
+		return;
+	}
 
+	Vector2 player_grid = Vector2Scale(position, 1.0f / GameData::TILE_SIZE);
+	Vector2 box_grid = Vector2Scale(box->position, 1.0f / GameData::TILE_SIZE);
+
+	// Player hits wall
 	if (
-		this->m_map.get_at_position(
-			position.x / GameData::TILE_SIZE, 
-			position.y / GameData::TILE_SIZE, 
+		this->m_map.map.get_at_position(
+			player_grid.x, player_grid.y,
 			SOLID_LAYER
 		) == SOLID_WALL
 	)
@@ -62,13 +69,68 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 			break;
 		}
 	}
+
+	// Box moves
+	if (player_grid == box_grid)
+	{
+		switch (direction)
+		{
+		case Direction::LEFT:
+			if (this->m_map.map.get_at_position(box_grid.x - 1, box_grid.y, SOLID_LAYER) == SOLID_WALL)
+			{
+				player->position.x += GameData::TILE_SIZE;
+				player->moves--;
+				break;
+			}
+
+			box->position.x -= GameData::TILE_SIZE;
+
+			break;
+
+		case Direction::RIGHT:
+			if (this->m_map.map.get_at_position(box_grid.x + 1, box_grid.y, SOLID_LAYER) == SOLID_WALL)
+			{
+				player->position.x -= GameData::TILE_SIZE;
+				player->moves--;
+				break;
+			}
+
+			box->position.x += GameData::TILE_SIZE;
+
+			break;
+
+		case Direction::UP:
+			if (this->m_map.map.get_at_position(box_grid.x, box_grid.y - 1, SOLID_LAYER) == SOLID_WALL)
+			{
+				player->position.y += GameData::TILE_SIZE;
+				player->moves--;
+				break;
+			}
+
+			box->position.y -= GameData::TILE_SIZE;
+
+			break;
+
+		case Direction::DOWN:
+			if (this->m_map.map.get_at_position(box_grid.x, box_grid.y + 1, SOLID_LAYER) == SOLID_WALL)
+			{
+				player->position.y -= GameData::TILE_SIZE;
+				player->moves--;
+				break;
+			}
+
+			box->position.y += GameData::TILE_SIZE;
+
+			break;
+		}
+	}
 }
 
 void Game::awake()
 {
-	for (int i = 0; i < this->m_map.layers.size(); i++)
+	for (int i = 0; i < this->m_map.map.layers.size(); i++)
 	{
-		std::vector<std::vector<int>> layer = this->m_map.layers[i];
+		std::vector<std::vector<int>> layer = this->m_map.map.layers[i];
 
 		for (size_t row = 0; row < layer.size(); row++)
 		{
@@ -79,32 +141,36 @@ void Game::awake()
 				switch (layer[row][col])
 				{
 					case BOX_ID: {
-						Box box = Box();
-						box.position = Vector2(
-							row * this->m_map.tile_size.x,
-							col * this->m_map.tile_size.y
+						std::shared_ptr<Box> box = std::make_shared<Box>();
+						box->position = Vector2(
+							row * this->m_map.map.tile_size.x,
+							col * this->m_map.map.tile_size.y
 						);
 
-						this->m_entities.add(std::make_unique<Box>(box));
-						this->m_map.set_at_position(row, col, i, 0);
+						this->m_box = box;
+						this->m_entities.add(box);
+						
+						this->m_map.map.set_at_position(row, col, i, 0);
 					} break;
 
 					case GOAL_ID: {
-						Goal goal = Goal();
-						goal.position = Vector2(
-							row * this->m_map.tile_size.x,
-							col * this->m_map.tile_size.y
+						std::shared_ptr<Goal> goal = std::make_shared<Goal>();
+						goal->position = Vector2(
+							row * this->m_map.map.tile_size.x,
+							col * this->m_map.map.tile_size.y
 						);
 
-						this->m_entities.add(std::make_unique<Goal>(goal));
-						this->m_map.set_at_position(row, col, i, 0);
+						this->m_goal = goal;
+						this->m_entities.add(goal);
+
+						this->m_map.map.set_at_position(row, col, i, 0);
 					} break;
 
 					case PLAYER_ID: {
 						std::shared_ptr<Player> player_t = std::make_shared<Player>();
 						player_t->position = Vector2(
-							row * this->m_map.tile_size.x,
-							col * this->m_map.tile_size.y
+							row * this->m_map.map.tile_size.x,
+							col * this->m_map.map.tile_size.y
 						);
 
 						player_t->on_player_moved = 
@@ -113,7 +179,7 @@ void Game::awake()
 						this->m_entities.add(player_t);
 						this->m_player = player_t;
 
-						this->m_map.set_at_position(row, col, i, 0);
+						this->m_map.map.set_at_position(row, col, i, 0);
 					} break;
 				}
 			}
@@ -123,7 +189,48 @@ void Game::awake()
 
 void Game::process()
 {
+	this->m_ticks++;
 	this->m_entities.process();
+
+	if (this->m_ticks == 30)
+	{
+		this->m_ticks = 0;
+
+		std::shared_ptr<Box> box = this->m_box.lock();
+		if (!box)
+		{
+			std::cerr << "CRITICAL: Failed to get box.\n";
+			return;
+		}
+
+		std::shared_ptr<Goal> goal = this->m_goal.lock();
+		if (!goal)
+		{
+			std::cerr << "CRITICAL: Failed to get goal.\n";
+			return;
+		}
+
+		if (
+			Vector2Scale(box->position, 1.0f / GameData::TILE_SIZE) ==
+			Vector2Scale(goal->position, 1.0f / GameData::TILE_SIZE)
+			)
+		{
+			int max = this->m_data->maps.size();
+			this->m_data->active_map_index++;
+
+			if (this->m_data->active_map_index >= max)
+			{
+				// TODO: win
+				return;
+			}
+
+			this->m_data->state_handler->set(
+				std::make_unique<Game>(
+					Game(this->m_data, this->m_data->maps[this->m_data->active_map_index])
+				)
+			);
+		}
+	}
 }
 
 void Game::render()
@@ -131,7 +238,7 @@ void Game::render()
 	ClearBackground(DARKBLUE);
 
 	this->m_entities.render();
-	this->m_map.draw();
+	this->m_map.map.draw();
 }
 
 void Game::leave()

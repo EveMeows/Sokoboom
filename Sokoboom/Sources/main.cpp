@@ -1,7 +1,9 @@
 #include <iostream>
 #include <memory>
 #include <cmath>
+#include <map>
 
+#include "../Headers/map.h"
 #include "../Headers/data.h"
 #include "../Headers/States/game.h"
 
@@ -17,16 +19,24 @@ int main()
 {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(800, 600, "Sokoboom");
-	SetTargetFPS(60);
+	// SetTargetFPS(60);
 
 	std::cout << "INFO: Tile size: " << GameData::TILE_SIZE << "\n";
 	std::cout << "INFO: Game resolution: " << GameData::GAME_SIZE.x << ", " << GameData::GAME_SIZE.y << "\n";
 
 	std::shared_ptr<GameData> data = std::make_shared<GameData>();
-	Map map = Map(std::filesystem::path("Content/Maps/intro.p8m"));
+
+	// Create maps
+	data->maps.push_back(
+		MapData("intro", Map(std::filesystem::path("Content/Maps/intro.p8m")))
+	);
+
+	data->maps.push_back(
+		MapData("1", Map(std::filesystem::path("Content/Maps/one.p8m")))
+	);
 	
 	data->state_handler->set(
-		std::make_unique<Game>(Game(data, map))
+		std::make_unique<Game>(Game(data, data->maps[data->active_map_index]))
 	);
 
 	RenderTexture2D renderer = LoadRenderTexture(GameData::GAME_SIZE.x, GameData::GAME_SIZE.y);

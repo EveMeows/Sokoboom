@@ -160,7 +160,7 @@
   </ImportGroup>
   <ItemGroup>
     <Content Include="Content\**">
-      <CopyToOutputDirectory>always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>
