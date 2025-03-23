@@ -27,17 +27,10 @@ int main()
 	std::shared_ptr<GameData> data = std::make_shared<GameData>();
 
 	// Create maps
-	data->maps.push_back(
-		MapData("intro", Map(std::filesystem::path("Content/Maps/intro.p8m")))
-	);
-
-	data->maps.push_back(
-		MapData("1", Map(std::filesystem::path("Content/Maps/one.p8m")))
-	);
+	data->maps.push_back(MapData("intro", Map(std::filesystem::path("Content/Maps/intro.p8m"))));
+	data->maps.push_back(MapData("1", Map(std::filesystem::path("Content/Maps/one.p8m"))));
 	
-	data->state_handler->set(
-		std::make_unique<Game>(Game(data, data->maps[data->active_map_index]))
-	);
+	data->state_handler->set(std::make_unique<Game>(data, data->maps[data->active_map_index]));
 
 	RenderTexture2D renderer = LoadRenderTexture(GameData::GAME_SIZE.x, GameData::GAME_SIZE.y);
 	SetTextureFilter(renderer.texture, TEXTURE_FILTER_POINT);

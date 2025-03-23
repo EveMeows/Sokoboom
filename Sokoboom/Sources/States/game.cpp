@@ -226,7 +226,7 @@ void Game::process()
 
 			this->m_data->state_handler->set(
 				std::make_unique<Game>(
-					Game(this->m_data, this->m_data->maps[this->m_data->active_map_index])
+					this->m_data, this->m_data->maps[this->m_data->active_map_index]
 				)
 			);
 		}
