@@ -21,6 +21,7 @@ public:
 
 	void process();
 	void render();
+	void leave();
 };
 
 template<typename T>

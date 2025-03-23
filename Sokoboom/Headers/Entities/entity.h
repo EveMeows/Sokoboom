@@ -12,6 +12,10 @@ public:
 
 	Entity(int id) : id(id) {};
 
-	virtual void process() = 0;
-	virtual void render() = 0;
+	virtual void awake() {};
+
+	virtual void process() {};
+	virtual void render() {};
+
+	virtual void leave() {};
 };

@@ -7,8 +7,9 @@
 class State
 {
 public:
-	virtual void awake() = 0;
-	virtual void process() = 0;
-	virtual void render() = 0;
+	virtual void awake() {};
+	virtual void process() {};
+	virtual void render() {};
+	virtual void leave() {};
 };
 

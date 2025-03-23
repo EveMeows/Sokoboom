@@ -20,3 +20,11 @@ void EntityController::render()
 		entity->render();
 	}
 }
+
+void EntityController::leave()
+{
+	for (const std::shared_ptr<Entity>& entity : this->m_entities)
+	{
+		entity->leave();
+	}
+}

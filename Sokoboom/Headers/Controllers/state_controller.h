@@ -8,7 +8,7 @@
 class StateController
 {
 private:
-	std::unique_ptr<State> m_state;
+	std::unique_ptr<State> m_state = nullptr;
 
 public:
 	void set(std::unique_ptr<State> state);
@@ -19,6 +19,11 @@ public:
 
 inline void StateController::set(std::unique_ptr<State> state)
 {
+	if (this->m_state != nullptr)
+	{
+		this->m_state->leave();
+	}
+
 	this->m_state = std::move(state);
 	this->m_state->awake();
 }

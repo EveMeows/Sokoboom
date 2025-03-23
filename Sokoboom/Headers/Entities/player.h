@@ -14,9 +14,11 @@ private:
 
 public:
 	std::function<void(Vector2, Direction)> on_player_moved = nullptr;
+	int moves = 0;
 
-	Player(int id);
+	Player();
 
 	void process() override;
 	void render() override;
+	void leave() override;
 };

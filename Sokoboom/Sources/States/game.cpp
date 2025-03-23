@@ -39,18 +39,26 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		{
 		case Direction::LEFT:
 			player->position.x += GameData::TILE_SIZE;
+			player->moves--;
+
 			break;
 
 		case Direction::RIGHT:
 			player->position.x -= GameData::TILE_SIZE;
+			player->moves--;
+
 			break;
 
 		case Direction::UP:
 			player->position.y += GameData::TILE_SIZE;
+			player->moves--;
+
 			break;
 
 		case Direction::DOWN:
 			player->position.y -= GameData::TILE_SIZE;
+			player->moves--;
+
 			break;
 		}
 	}
@@ -93,13 +101,14 @@ void Game::awake()
 					} break;
 
 					case PLAYER_ID: {
-						std::shared_ptr<Player> player_t = std::make_shared<Player>(PLAYER_ID);
+						std::shared_ptr<Player> player_t = std::make_shared<Player>();
 						player_t->position = Vector2(
 							row * this->m_map.tile_size.x,
 							col * this->m_map.tile_size.y
 						);
 
-						player_t->on_player_moved = std::bind_front(&Game::on_player_moved, this);
+						player_t->on_player_moved = 
+							std::bind_front(&Game::on_player_moved, this);
 					
 						this->m_entities.add(player_t);
 						this->m_player = player_t;
@@ -123,4 +132,9 @@ void Game::render()
 
 	this->m_entities.render();
 	this->m_map.draw();
+}
+
+void Game::leave()
+{
+	this->m_entities.leave();
 }

@@ -15,8 +15,8 @@ private:
 public:
 	Box();
 
-	void process() override {};
 	void render() override;
+	void leave() override;
 };
 
 inline Box::Box() : Entity(0)
@@ -27,4 +27,9 @@ inline Box::Box() : Entity(0)
 inline void Box::render()
 {
 	DrawTextureV(this->m_texture, this->position, WHITE);
+}
+
+inline void Box::leave()
+{
+	UnloadTexture(this->m_texture);
 }

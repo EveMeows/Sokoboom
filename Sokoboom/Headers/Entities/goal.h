@@ -14,8 +14,8 @@ private:
 public:
 	Goal();
 
-	void process() override {};
 	void render() override;
+	void leave() override;
 };
 
 inline Goal::Goal() : Entity(0)
@@ -26,4 +26,9 @@ inline Goal::Goal() : Entity(0)
 inline void Goal::render()
 {
 	DrawTextureV(this->m_texture, this->position, WHITE);
+}
+
+inline void Goal::leave()
+{
+	UnloadTexture(this->m_texture);
 }

@@ -27,4 +27,5 @@ public:
 	void awake() override;
 	void process() override;
 	void render() override;
+	void leave() override;
 };
