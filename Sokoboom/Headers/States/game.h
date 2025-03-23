@@ -15,15 +15,16 @@ class Game : public State
 {
 private:
 	std::shared_ptr<GameData> m_data;
-	Map* m_map = nullptr;
+	Map m_map;
 
 	EntityController m_entities = EntityController();
 
-	Player* m_player = nullptr;
+	std::weak_ptr<Player> m_player;
 	void on_player_moved(Vector2 position, Direction direction);
 public:
-	Game(std::shared_ptr<GameData> data, Map* map);
+	Game(std::shared_ptr<GameData> data, Map map) : m_data(data), m_map(map) {}
 
+	void awake() override;
 	void process() override;
 	void render() override;
 };

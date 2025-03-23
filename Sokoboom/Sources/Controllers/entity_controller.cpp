@@ -1,13 +1,13 @@
 #include "../../Headers/Controllers/entity_controller.h"
 
-void EntityController::add(std::unique_ptr<Entity> e)
+void EntityController::add(std::shared_ptr<Entity> e)
 {
-	this->m_entities.push_back(std::move(e));
+	this->m_entities.push_back(e);
 }
 
 void EntityController::process()
 {
-	for (const std::unique_ptr<Entity>& entity : this->m_entities)
+	for (const std::shared_ptr<Entity>& entity : this->m_entities)
 	{
 		entity->process();
 	}
@@ -15,7 +15,7 @@ void EntityController::process()
 
 void EntityController::render()
 {
-	for (const std::unique_ptr<Entity>& entity : this->m_entities)
+	for (const std::shared_ptr<Entity>& entity : this->m_entities)
 	{
 		entity->render();
 	}

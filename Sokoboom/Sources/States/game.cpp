@@ -18,8 +18,17 @@ static constexpr int SOLID_WALL = 1;
 
 void Game::on_player_moved(Vector2 position, Direction direction)
 {
+	std::shared_ptr<Player> player = this->m_player.lock();
+	if (!player)
+	{
+		std::cerr << "CRITICAL: Failed to get player.\n";
+		return;
+	}
+
+	std::cout << "INFO: Player weak link uses: " << player.use_count() << std::endl;
+
 	if (
-		this->m_map->get_at_position(
+		this->m_map.get_at_position(
 			position.x / GameData::TILE_SIZE, 
 			position.y / GameData::TILE_SIZE, 
 			SOLID_LAYER
@@ -29,29 +38,29 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		switch (direction)
 		{
 		case Direction::LEFT:
-			this->m_player->position.x += GameData::TILE_SIZE;
+			player->position.x += GameData::TILE_SIZE;
 			break;
 
 		case Direction::RIGHT:
-			this->m_player->position.x -= GameData::TILE_SIZE;
+			player->position.x -= GameData::TILE_SIZE;
 			break;
 
 		case Direction::UP:
-			this->m_player->position.y += GameData::TILE_SIZE;
+			player->position.y += GameData::TILE_SIZE;
 			break;
 
 		case Direction::DOWN:
-			this->m_player->position.y -= GameData::TILE_SIZE;
+			player->position.y -= GameData::TILE_SIZE;
 			break;
 		}
 	}
 }
 
-Game::Game(std::shared_ptr<GameData> data, Map* map) : m_data(data), m_map(map)
+void Game::awake()
 {
-	for (int i = 0; i < this->m_map->layers.size(); i++)
+	for (int i = 0; i < this->m_map.layers.size(); i++)
 	{
-		std::vector<std::vector<int>> layer = this->m_map->layers[i];
+		std::vector<std::vector<int>> layer = this->m_map.layers[i];
 
 		for (size_t row = 0; row < layer.size(); row++)
 		{
@@ -64,41 +73,38 @@ Game::Game(std::shared_ptr<GameData> data, Map* map) : m_data(data), m_map(map)
 					case BOX_ID: {
 						Box box = Box();
 						box.position = Vector2(
-							row * this->m_map->tile_size.x,
-							col * this->m_map->tile_size.y
+							row * this->m_map.tile_size.x,
+							col * this->m_map.tile_size.y
 						);
 
 						this->m_entities.add(std::make_unique<Box>(box));
-						this->m_map->set_at_position(row, col, i, 0);
+						this->m_map.set_at_position(row, col, i, 0);
 					} break;
 
 					case GOAL_ID: {
 						Goal goal = Goal();
 						goal.position = Vector2(
-							row * this->m_map->tile_size.x,
-							col * this->m_map->tile_size.y
+							row * this->m_map.tile_size.x,
+							col * this->m_map.tile_size.y
 						);
 
 						this->m_entities.add(std::make_unique<Goal>(goal));
-						this->m_map->set_at_position(row, col, i, 0);
+						this->m_map.set_at_position(row, col, i, 0);
 					} break;
 
 					case PLAYER_ID: {
-						Player player_t = Player(PLAYER_ID);
-						player_t.position = Vector2(
-							row * this->m_map->tile_size.x,
-							col * this->m_map->tile_size.y
+						std::shared_ptr<Player> player_t = std::make_shared<Player>(PLAYER_ID);
+						player_t->position = Vector2(
+							row * this->m_map.tile_size.x,
+							col * this->m_map.tile_size.y
 						);
 
-						player_t.on_player_moved = std::bind_front(&Game::on_player_moved, this);
-						this->m_entities.add(std::make_unique<Player>(player_t));
+						player_t->on_player_moved = std::bind_front(&Game::on_player_moved, this);
+					
+						this->m_entities.add(player_t);
+						this->m_player = player_t;
 
-						// ???
-						// How do I make this not use a raw pointer...
-						// Player* m_player
-						this->m_player = this->m_entities.get_id<Player>(PLAYER_ID);
-
-						this->m_map->set_at_position(row, col, i, 0);
+						this->m_map.set_at_position(row, col, i, 0);
 					} break;
 				}
 			}
@@ -116,5 +122,5 @@ void Game::render()
 	ClearBackground(DARKBLUE);
 
 	this->m_entities.render();
-	this->m_map->draw();
+	this->m_map.draw();
 }

@@ -26,7 +26,7 @@ int main()
 	Map map = Map(std::filesystem::path("Content/Maps/intro.p8m"));
 	
 	data->state_handler->set(
-		std::make_unique<Game>(Game(data, &map))
+		std::make_unique<Game>(Game(data, map))
 	);
 
 	RenderTexture2D renderer = LoadRenderTexture(GameData::GAME_SIZE.x, GameData::GAME_SIZE.y);

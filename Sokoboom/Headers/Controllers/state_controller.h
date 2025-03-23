@@ -20,6 +20,7 @@ public:
 inline void StateController::set(std::unique_ptr<State> state)
 {
 	this->m_state = std::move(state);
+	this->m_state->awake();
 }
 
 inline void StateController::process()

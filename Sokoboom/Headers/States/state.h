@@ -7,6 +7,7 @@
 class State
 {
 public:
+	virtual void awake() = 0;
 	virtual void process() = 0;
 	virtual void render() = 0;
 };

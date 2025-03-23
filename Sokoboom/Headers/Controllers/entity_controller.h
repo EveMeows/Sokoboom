@@ -8,27 +8,27 @@
 class EntityController
 {
 private:
-	std::vector<std::unique_ptr<Entity>> m_entities;
+	std::vector<std::shared_ptr<Entity>> m_entities;
 
 public:
 	template<typename T>
-	T* get_first();
+	std::shared_ptr<T> get_first();
 
 	template<typename T>
-	T* get_id(int id);
+	std::shared_ptr<T> get_id(int id);
 
-	void add(std::unique_ptr<Entity> e);
+	void add(std::shared_ptr<Entity> e);
 
 	void process();
 	void render();
 };
 
 template<typename T>
-inline T* EntityController::get_first()
+inline std::shared_ptr<T> EntityController::get_first()
 {
-	for (const std::unique_ptr<Entity>& e : this->m_entities)
+	for (const std::shared_ptr<Entity>& e : this->m_entities)
 	{
-		if (T* out = dynamic_cast<T*>(e.get()))
+		if (std::shared_ptr<T> out = std::dynamic_pointer_cast<T>(e))
 		{
 			return out;
 		}
@@ -38,18 +38,16 @@ inline T* EntityController::get_first()
 }
 
 template<typename T>
-inline T* EntityController::get_id(int id)
+inline std::shared_ptr<T> EntityController::get_id(int id)
 {
 	for (const std::unique_ptr<Entity>& e : this->m_entities)
 	{
 		if (e->id == id)
 		{
-			if (T* out = static_cast<T*>(e.get()))
+			if (std::shared_ptr<T> out = std::dynamic_pointer_cast<T>(e))
 			{
 				return out;
 			}
-
-			return nullptr;
 		}
 	}
 
