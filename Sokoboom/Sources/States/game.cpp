@@ -34,42 +34,6 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 	Vector2 player_grid = Vector2Scale(position, 1.0f / GameData::TILE_SIZE);
 	Vector2 box_grid = Vector2Scale(box->position, 1.0f / GameData::TILE_SIZE);
 
-	// Player hits wall
-	if (
-		this->m_map.map.get_at_position(
-			player_grid.x, player_grid.y,
-			SOLID_LAYER
-		) == SOLID_WALL
-	)
-	{
-		switch (direction)
-		{
-		case Direction::LEFT:
-			player->position.x += GameData::TILE_SIZE;
-			player->moves--;
-
-			break;
-
-		case Direction::RIGHT:
-			player->position.x -= GameData::TILE_SIZE;
-			player->moves--;
-
-			break;
-
-		case Direction::UP:
-			player->position.y += GameData::TILE_SIZE;
-			player->moves--;
-
-			break;
-
-		case Direction::DOWN:
-			player->position.y -= GameData::TILE_SIZE;
-			player->moves--;
-
-			break;
-		}
-	}
-
 	// Box moves
 	if (player_grid == box_grid)
 	{
@@ -122,6 +86,90 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 			box->position.y += GameData::TILE_SIZE;
 
 			break;
+		}
+	}
+
+	// Player hits wall
+	if (
+		this->m_map.map.get_at_position(
+			player_grid.x, player_grid.y,
+			SOLID_LAYER
+		) == SOLID_WALL
+	)
+	{
+		switch (direction)
+		{
+		case Direction::LEFT:
+			player->position.x += GameData::TILE_SIZE;
+			player->moves--;
+
+			break;
+
+		case Direction::RIGHT:
+			player->position.x -= GameData::TILE_SIZE;
+			player->moves--;
+
+			break;
+
+		case Direction::UP:
+			player->position.y += GameData::TILE_SIZE;
+			player->moves--;
+
+			break;
+
+		case Direction::DOWN:
+			player->position.y -= GameData::TILE_SIZE;
+			player->moves--;
+
+			break;
+		}
+	}
+
+	if (this->m_undos.empty())
+	{
+		this->m_undos.push_back(
+			MoveData(player->position, box->position)
+		);
+	}
+	else
+	{
+		MoveData last = this->m_undos[this->m_undos.size() - 1];
+		if (player->position != last.player_position)
+		{
+			this->m_undos.push_back(
+				MoveData(player->position, box->position)
+			);
+		}
+	}
+}
+
+void Game::undo()
+{
+	if (!this->m_undos.empty())
+	{
+		int last_idx = this->m_undos.size() - 1;
+		MoveData last = this->m_undos[last_idx];
+
+		std::shared_ptr<Box> box = this->m_box.lock();
+		if (!box)
+		{
+			std::cerr << "CRITICAL: Failed to get box.\n";
+			return;
+		}
+
+		std::shared_ptr<Player> player = this->m_player.lock();
+		if (!player)
+		{
+			std::cerr << "CRITICAL: Failed to get goal.\n";
+			return;
+		}
+
+		player->position = last.player_position;
+		box->position = last.box_position;
+
+		if (this->m_undos.size() > 1)
+		{
+			this->m_undos.erase(this->m_undos.begin() + last_idx);
 		}
 	}
 }
@@ -185,12 +233,77 @@ void Game::awake()
 			}
 		}
 	}
+
+	std::shared_ptr<Player> player = this->m_player.lock();
+	if (!player)
+	{
+		std::cerr << "CRITICAL: Failed to get player.\n";
+		return;
+	}
+
+	std::shared_ptr<Box> box = this->m_box.lock();
+	if (!box)
+	{
+		std::cerr << "CRITICAL: Failed to get box.\n";
+		return;
+	}
+
+	this->m_undos.push_back(
+		MoveData(player->position, box->position)
+	);
 }
 
 void Game::process()
 {
 	this->m_ticks++;
 	this->m_entities.process();
+
+	// Low budget pressed repeat function
+	if (IsKeyDown(KEY_U))
+	{
+		if (!this->m_undoing)
+		{
+			// Remove the last stored movement if its the same position.
+			if (std::shared_ptr<Player> player = this->m_player.lock())
+			{
+				int last_idx = this->m_undos.size() - 1;
+				MoveData last = this->m_undos[last_idx];
+				if (this->m_undos.size() > 1 && player->position == last.player_position)
+				{
+					this->m_undos.erase(this->m_undos.begin() + last_idx);
+				}
+			}
+			else
+			{
+				std::cerr << "CRITICAL: Failed to get goal.\n";
+				return;
+			}
+
+			this->undo();	
+			this->m_undoing = true;
+		}
+	}
+	else
+	{
+		if (this->m_undoing)
+		{
+			this->m_time = 0;
+			this->m_undoing = false;
+			this->m_undo_delay = 0.35f;
+		}
+	}
+
+	if (this->m_undoing)
+	{
+		std::cout << this->m_time << std::endl;
+		this->m_time += GetFrameTime();
+		if (this->m_time >= this->m_undo_delay)
+		{
+			this->m_time = 0;
+			this->m_undo_delay = 0.05f;
+			this->undo();
+		}
+	}
 
 	if (this->m_ticks == 30)
 	{
