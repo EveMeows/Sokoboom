@@ -411,7 +411,10 @@ void Game::render()
 void Game::leave()
 {
 	this->m_entities.leave();
-	this->m_map.map.leave();
+	
+	// This breaks the game if you press R
+	// for some reason
+	// this->m_map.map.leave();
 
 	UnloadFont(this->m_font);
 }
