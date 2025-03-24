@@ -258,8 +258,22 @@ void Game::process()
 	this->m_ticks++;
 	this->m_entities.process();
 
+	if (IsKeyPressed(KEY_R))
+	{
+		if (!this->switched)
+		{
+			this->m_data->state_handler->set(
+				std::make_unique<Game>(
+					this->m_data, this->m_data->maps[this->m_data->active_map_index]
+				)
+			);
+
+			this->switched = true;
+		}
+	}
+
 	// Low budget pressed repeat function
-	if (IsKeyDown(KEY_U))
+	if (IsKeyDown(KEY_Z))
 	{
 		if (!this->m_undoing)
 		{
