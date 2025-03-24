@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <format>
 
 #include <raymath.h>
 
@@ -251,6 +252,9 @@ void Game::awake()
 	this->m_undos.push_back(
 		MoveData(player->position, box->position)
 	);
+
+	this->m_font = utilities::load_font_relative(std::filesystem::path("Content/pico-8.ttf"));
+	SetTextureFilter(this->m_font.texture, TEXTURE_FILTER_POINT);
 }
 
 void Game::process()
@@ -289,7 +293,7 @@ void Game::process()
 			}
 			else
 			{
-				std::cerr << "CRITICAL: Failed to get goal.\n";
+				std::cerr << "CRITICAL: Failed to get player.\n";
 				return;
 			}
 
@@ -370,10 +374,44 @@ void Game::render()
 
 	this->m_entities.render();
 	this->m_map.map.draw();
+
+	if (std::shared_ptr<Player> player = this->m_player.lock())
+	{
+		DrawRectangle(
+			0, GameData::GAME_SIZE.y - GameData::GAP, GameData::GAME_SIZE.x, GameData::GAP, GRAY
+		);
+
+		DrawTextPro(
+			this->m_font, 
+			std::format("{:03} MOVES", player->moves).c_str(), 
+			Vector2(1, GameData::GAME_SIZE.y - GameData::GAP + 1), 
+			Vector2Zero(), 0, 5.0f, 0.1f, WHITE
+		);
+	
+		std::string name = std::format("-{}-", this->m_map.name);
+		Vector2 name_dim = MeasureTextEx(this->m_font, name.c_str(), 5.0f, 0.1f);
+
+		DrawTextPro(
+			this->m_font, 
+			name.c_str(), 
+			Vector2(
+				floor(GameData::GAME_SIZE.x - name_dim.x), 
+				floor(GameData::GAME_SIZE.y - GameData::GAP + 1)
+			),
+			Vector2Zero(), 0, 5.0f, 0.1f, WHITE
+		);
+	}
+	else
+	{
+		std::cerr << "CRITICAL: Failed to get player.\n";
+		return;
+	}
 }
 
 void Game::leave()
 {
 	this->m_entities.leave();
 	this->m_map.map.leave();
+
+	UnloadFont(this->m_font);
 }

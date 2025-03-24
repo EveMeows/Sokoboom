@@ -28,7 +28,7 @@ int main()
 	data->state_handler;
 
 	// Create maps
-	data->maps.push_back(MapData("intro", Map(std::filesystem::path("Content/Maps/intro.p8m"))));
+	data->maps.push_back(MapData("INTRO", Map(std::filesystem::path("Content/Maps/intro.p8m"))));
 
 	data->maps.push_back(MapData("1", Map(std::filesystem::path("Content/Maps/one.p8m"))));
 	data->maps.push_back(MapData("2", Map(std::filesystem::path("Content/Maps/two.p8m"))));

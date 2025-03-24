@@ -27,6 +27,8 @@ class Game : public State
 private:
 	int m_ticks = 0;
 
+	Font m_font;
+
 	std::shared_ptr<GameData> m_data;
 	MapData m_map;
 
