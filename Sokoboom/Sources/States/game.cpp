@@ -260,7 +260,7 @@ void Game::process()
 
 	if (IsKeyPressed(KEY_R))
 	{
-		if (!this->switched)
+		if (!this->m_switched)
 		{
 			this->m_data->state_handler->set(
 				std::make_unique<Game>(
@@ -268,7 +268,7 @@ void Game::process()
 				)
 			);
 
-			this->switched = true;
+			this->m_switched = true;
 		}
 	}
 
@@ -339,9 +339,9 @@ void Game::process()
 		if (
 			Vector2Scale(box->position, 1.0f / GameData::TILE_SIZE) ==
 			Vector2Scale(goal->position, 1.0f / GameData::TILE_SIZE)
-			)
+		)
 		{
-			if (!this->switched)
+			if (!this->m_switched)
 			{
 				int max = this->m_data->maps.size();
 				this->m_data->active_map_index++;
@@ -358,7 +358,7 @@ void Game::process()
 					)
 				);
 
-				this->switched = true;
+				this->m_switched = true;
 			}
 		}
 	}
