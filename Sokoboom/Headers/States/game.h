@@ -41,6 +41,8 @@ private:
 
 	void on_player_moved(Vector2 position, Direction direction);
 
+	bool switched = false;
+
 	float m_time = 0;
 	float m_undo_delay = 0.35f;
 	bool m_undoing = false;

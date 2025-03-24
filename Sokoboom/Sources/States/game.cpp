@@ -295,7 +295,6 @@ void Game::process()
 
 	if (this->m_undoing)
 	{
-		std::cout << this->m_time << std::endl;
 		this->m_time += GetFrameTime();
 		if (this->m_time >= this->m_undo_delay)
 		{
@@ -328,20 +327,25 @@ void Game::process()
 			Vector2Scale(goal->position, 1.0f / GameData::TILE_SIZE)
 			)
 		{
-			int max = this->m_data->maps.size();
-			this->m_data->active_map_index++;
-
-			if (this->m_data->active_map_index >= max)
+			if (!this->switched)
 			{
-				// TODO: win
-				return;
-			}
+				int max = this->m_data->maps.size();
+				this->m_data->active_map_index++;
 
-			this->m_data->state_handler->set(
-				std::make_unique<Game>(
-					this->m_data, this->m_data->maps[this->m_data->active_map_index]
-				)
-			);
+				if (this->m_data->active_map_index >= max)
+				{
+					// TODO: win
+					return;
+				}
+
+				this->m_data->state_handler->set(
+					std::make_unique<Game>(
+						this->m_data, this->m_data->maps[this->m_data->active_map_index]
+					)
+				);
+
+				this->switched = true;
+			}
 		}
 	}
 }
