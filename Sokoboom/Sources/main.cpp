@@ -29,9 +29,15 @@ int main()
 
 	// Create maps
 	data->maps.push_back(MapData("intro", Map(std::filesystem::path("Content/Maps/intro.p8m"))));
+
 	data->maps.push_back(MapData("1", Map(std::filesystem::path("Content/Maps/one.p8m"))));
 	data->maps.push_back(MapData("2", Map(std::filesystem::path("Content/Maps/two.p8m"))));
 	data->maps.push_back(MapData("3", Map(std::filesystem::path("Content/Maps/three.p8m"))));
+	data->maps.push_back(MapData("4", Map(std::filesystem::path("Content/Maps/four.p8m"))));
+	data->maps.push_back(MapData("5", Map(std::filesystem::path("Content/Maps/five.p8m"))));
+	// 5 left
+
+	// TODO: end
 
 	data->state_handler->set(std::make_unique<Game>(data, data->maps[data->active_map_index]));
 
@@ -40,6 +46,7 @@ int main()
 
 	while (!WindowShouldClose())
 	{
+		// Screen scale
 		float scale = fmin(
 			GetScreenWidth() / GameData::GAME_SIZE.x,
 			GetScreenHeight() / GameData::GAME_SIZE.y
@@ -73,6 +80,7 @@ int main()
 		{
 			ClearBackground(BLACK);
 
+			// Fucked up screen scaling calculations
 			DrawTexturePro(
 				renderer.texture,
 				Rectangle(0, 0, renderer.texture.width, -renderer.texture.height),
@@ -88,6 +96,13 @@ int main()
 	}
 
 	CloseWindow();
+
+	// Release data
+	data->state_handler->leave();
+	for (MapData map_data : data->maps)
+	{
+		map_data.map.leave();
+	}
 
 	// According to C++ 11 and later
 	// If a program reaches the end without return

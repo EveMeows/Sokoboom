@@ -14,9 +14,8 @@ Map::Map(const std::filesystem::path& path)
 	this->layers = this->m_data["layers"];
 	this->tile_size = Vector2(this->m_data["tile_x"], this->m_data["tile_y"]);
 
+	// We can just straight up skip loading the other sprites
 	this->m_tiles[1] = utilities::load_relative(std::filesystem::path("Content/Props/wall.png"));
-	this->m_tiles[2] = utilities::load_relative(std::filesystem::path("Content/Entities/box.png"));
-	this->m_tiles[3] = utilities::load_relative(std::filesystem::path("Content/Entities/goal.png"));
 }
 
 void Map::draw()
@@ -36,6 +35,15 @@ void Map::draw()
 				);
 			}
 		}
+	}
+}
+
+void Map::leave()
+{
+	std::map<int, Texture2D>::iterator iter;
+	for (iter = this->m_tiles.begin(); iter != this->m_tiles.end(); iter++)
+	{
+		UnloadTexture(iter->second);
 	}
 }
 

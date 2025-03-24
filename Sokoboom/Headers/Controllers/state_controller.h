@@ -25,6 +25,7 @@ public:
 
 	void process();
 	void render();
+	void leave();
 };
 
 inline Color StateController::colour() const
@@ -80,4 +81,12 @@ inline void StateController::render()
 {
 	if (this->m_state == nullptr) return;
 	this->m_state->render();
+}
+
+inline void StateController::leave()
+{
+	if (this->m_state == nullptr) return;
+	this->m_state->leave();
+
+	this->m_state.reset();
 }

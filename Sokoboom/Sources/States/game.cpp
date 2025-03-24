@@ -375,4 +375,5 @@ void Game::render()
 void Game::leave()
 {
 	this->m_entities.leave();
+	this->m_map.map.leave();
 }
