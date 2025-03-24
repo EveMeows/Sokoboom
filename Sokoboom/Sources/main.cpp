@@ -25,11 +25,14 @@ int main()
 	std::cout << "INFO: Game resolution: " << GameData::GAME_SIZE.x << ", " << GameData::GAME_SIZE.y << "\n";
 
 	std::shared_ptr<GameData> data = std::make_shared<GameData>();
+	data->state_handler;
 
 	// Create maps
 	data->maps.push_back(MapData("intro", Map(std::filesystem::path("Content/Maps/intro.p8m"))));
 	data->maps.push_back(MapData("1", Map(std::filesystem::path("Content/Maps/one.p8m"))));
-	
+	data->maps.push_back(MapData("2", Map(std::filesystem::path("Content/Maps/two.p8m"))));
+	data->maps.push_back(MapData("3", Map(std::filesystem::path("Content/Maps/three.p8m"))));
+
 	data->state_handler->set(std::make_unique<Game>(data, data->maps[data->active_map_index]));
 
 	RenderTexture2D renderer = LoadRenderTexture(GameData::GAME_SIZE.x, GameData::GAME_SIZE.y);
@@ -58,6 +61,11 @@ int main()
 		BeginTextureMode(renderer);
 		{
 			data->state_handler->render();
+
+			if (data->state_handler->switching)
+			{
+				DrawRectangleV(Vector2Zero(), GameData::GAME_SIZE, data->state_handler->colour());
+			}
 		}
 		EndTextureMode();
 
