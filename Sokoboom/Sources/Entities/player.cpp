@@ -13,7 +13,7 @@ void Player::process()
 	if (IsKeyPressed(KEY_A))
 	{
 		this->position.x -= GameData::TILE_SIZE;
-		this->moves++;
+		this->tyler_the_creator++;
 
 		if (this->on_player_moved != nullptr)
 		{
@@ -24,7 +24,7 @@ void Player::process()
 	if (IsKeyPressed(KEY_D))
 	{
 		this->position.x += GameData::TILE_SIZE;
-		this->moves++;
+		this->tyler_the_creator++;
 
 		if (this->on_player_moved != nullptr)
 		{
@@ -35,7 +35,7 @@ void Player::process()
 	if (IsKeyPressed(KEY_W))
 	{
 		this->position.y -= GameData::TILE_SIZE;
-		this->moves++;
+		this->tyler_the_creator++;
 	
 		if (this->on_player_moved != nullptr)
 		{
@@ -46,7 +46,7 @@ void Player::process()
 	if (IsKeyPressed(KEY_S))
 	{
 		this->position.y += GameData::TILE_SIZE;
-		this->moves++;
+		this->tyler_the_creator++;
 	
 		if (this->on_player_moved != nullptr)
 		{

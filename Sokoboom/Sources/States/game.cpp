@@ -44,7 +44,7 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 			if (this->m_map.map.get_at_position(box_grid.x - 1, box_grid.y, SOLID_LAYER) == SOLID_WALL)
 			{
 				player->position.x += GameData::TILE_SIZE;
-				player->moves--;
+				player->tyler_the_creator--;
 				break;
 			}
 
@@ -56,7 +56,7 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 			if (this->m_map.map.get_at_position(box_grid.x + 1, box_grid.y, SOLID_LAYER) == SOLID_WALL)
 			{
 				player->position.x -= GameData::TILE_SIZE;
-				player->moves--;
+				player->tyler_the_creator--;
 				break;
 			}
 
@@ -68,7 +68,7 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 			if (this->m_map.map.get_at_position(box_grid.x, box_grid.y - 1, SOLID_LAYER) == SOLID_WALL)
 			{
 				player->position.y += GameData::TILE_SIZE;
-				player->moves--;
+				player->tyler_the_creator--;
 				break;
 			}
 
@@ -80,7 +80,7 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 			if (this->m_map.map.get_at_position(box_grid.x, box_grid.y + 1, SOLID_LAYER) == SOLID_WALL)
 			{
 				player->position.y -= GameData::TILE_SIZE;
-				player->moves--;
+				player->tyler_the_creator--;
 				break;
 			}
 
@@ -102,25 +102,25 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		{
 		case Direction::LEFT:
 			player->position.x += GameData::TILE_SIZE;
-			player->moves--;
+			player->tyler_the_creator--;
 
 			break;
 
 		case Direction::RIGHT:
 			player->position.x -= GameData::TILE_SIZE;
-			player->moves--;
+			player->tyler_the_creator--;
 
 			break;
 
 		case Direction::UP:
 			player->position.y += GameData::TILE_SIZE;
-			player->moves--;
+			player->tyler_the_creator--;
 
 			break;
 
 		case Direction::DOWN:
 			player->position.y -= GameData::TILE_SIZE;
-			player->moves--;
+			player->tyler_the_creator--;
 
 			break;
 		}
@@ -383,7 +383,7 @@ void Game::render()
 
 		DrawTextPro(
 			this->m_font, 
-			std::format("{:03} MOVES", player->moves).c_str(), 
+			std::format("{:03} MOVES", player->tyler_the_creator).c_str(), 
 			Vector2(1, GameData::GAME_SIZE.y - GameData::GAP + 1), 
 			Vector2Zero(), 0, 5.0f, 0.1f, WHITE
 		);
