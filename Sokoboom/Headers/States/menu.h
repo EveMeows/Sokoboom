@@ -1,0 +1,25 @@
+#pragma once
+
+#include "state.h"
+#include "../data.h"
+#include "../button.h"
+
+#include <vector>
+
+#include <raylib.h>
+
+class Menu : public State
+{
+private:
+	Font m_font;
+	std::shared_ptr<GameData> m_data;
+
+	std::vector<Button> m_buttons;
+public:
+	Menu(std::shared_ptr<GameData> data);
+
+	void awake() override;
+	void process() override;
+	void render() override;
+	void leave() override;
+};

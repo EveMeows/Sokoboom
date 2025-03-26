@@ -140,8 +140,10 @@
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\map.cpp" />
     <ClCompile Include="Sources\States\game.cpp" />
+    <ClCompile Include="Sources\States\menu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\button.h" />
     <ClInclude Include="Headers\Controllers\entity_controller.h" />
     <ClInclude Include="Headers\Controllers\state_controller.h" />
     <ClInclude Include="Headers\Entities\box.h" />
@@ -152,6 +154,7 @@
     <ClInclude Include="Headers\Entities\player_direction.h" />
     <ClInclude Include="Headers\map.h" />
     <ClInclude Include="Headers\States\game.h" />
+    <ClInclude Include="Headers\States\menu.h" />
     <ClInclude Include="Headers\States\state.h" />
     <ClInclude Include="Headers\utilities.h" />
   </ItemGroup>

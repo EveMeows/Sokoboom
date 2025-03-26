@@ -6,6 +6,7 @@
 #include "../Headers/map.h"
 #include "../Headers/data.h"
 #include "../Headers/States/game.h"
+#include "../Headers/States/menu.h"
 
 #include <raylib.h>
 #include <raymath.h>
@@ -37,15 +38,22 @@ int main()
 	data->maps.push_back(MapData("5", Map(std::filesystem::path("Content/Maps/five.p8m"))));
 	// 5 left
 
-	// TODO: end
+	data->maps.push_back(MapData("END", Map(std::filesystem::path("Content/Maps/the_end.p8m"))));
 
-	data->state_handler->set(std::make_unique<Game>(data, data->maps[data->active_map_index]));
+	// data->state_handler->set(std::make_unique<Game>(data, data->maps[data->active_map_index]));
+	data->state_handler->set(std::make_unique<Menu>(data));
 
 	RenderTexture2D renderer = LoadRenderTexture(GameData::GAME_SIZE.x, GameData::GAME_SIZE.y);
 	SetTextureFilter(renderer.texture, TEXTURE_FILTER_POINT);
 
-	while (!WindowShouldClose())
+	while (!data->exit)
 	{
+		if (WindowShouldClose())
+		{
+			data->exit = true;
+			continue;
+		}
+
 		// Screen scale
 		float scale = fmin(
 			GetScreenWidth() / GameData::GAME_SIZE.x,
@@ -53,12 +61,14 @@ int main()
 		);
 
 		Vector2 mouse = GetMousePosition();
+		Vector2 unclamped = Vector2(
+			(mouse.x - (GetScreenWidth() - (GameData::GAME_SIZE.x * scale)) * 0.5f) / scale,
+			(mouse.y - (GetScreenHeight() - (GameData::GAME_SIZE.y * scale)) * 0.5f) / scale
+		);
+
 		data->virtual_mouse = Vector2(
 			Vector2Clamp(
-				Vector2(
-					(mouse.x - (GetScreenWidth() - (GameData::GAME_SIZE.x * scale)) * 0.5f) / 2, 
-					(mouse.y - (GetScreenHeight() - (GameData::GAME_SIZE.y * scale)) * 0.5f) / 2
-				),
+				unclamped,
 				Vector2Zero(), GameData::GAME_SIZE
 			)
 		);

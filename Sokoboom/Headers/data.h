@@ -26,4 +26,6 @@ struct GameData
 
 	const std::unique_ptr<StateController> state_handler = std::make_unique<StateController>();
 	Vector2 virtual_mouse;
+
+	bool exit = false;
 };
