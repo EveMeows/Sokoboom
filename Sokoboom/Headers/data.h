@@ -16,7 +16,7 @@ struct MapData
 struct GameData
 {
 	int total_moves = 0;
-	int active_map_index = 11;
+	int active_map_index = 0;
 	std::vector<MapData> maps;
 
 	static constexpr int GAP = 7;
