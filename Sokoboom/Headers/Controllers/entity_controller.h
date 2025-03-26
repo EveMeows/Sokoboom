@@ -12,10 +12,7 @@ private:
 
 public:
 	template<typename T>
-	std::shared_ptr<T> get_first();
-
-	template<typename T>
-	std::shared_ptr<T> get_id(int id);
+	void remove();
 
 	void add(std::shared_ptr<Entity> e);
 
@@ -25,32 +22,17 @@ public:
 };
 
 template<typename T>
-inline std::shared_ptr<T> EntityController::get_first()
+inline void EntityController::remove()
 {
-	for (const std::shared_ptr<Entity>& e : this->m_entities)
+	for (const std::shared_ptr<Entity>& entity : this->m_entities)
 	{
-		if (std::shared_ptr<T> out = std::dynamic_pointer_cast<T>(e))
+		if (std::shared_ptr<T> out = std::dynamic_pointer_cast<T>(entity))
 		{
-			return out;
+			this->m_entities.erase(
+				std::find(this->m_entities.begin(), this->m_entities.end(), entity)
+			);
+
+			return;
 		}
 	}
-
-	return nullptr;
-}
-
-template<typename T>
-inline std::shared_ptr<T> EntityController::get_id(int id)
-{
-	for (const std::unique_ptr<Entity>& e : this->m_entities)
-	{
-		if (e->id == id)
-		{
-			if (std::shared_ptr<T> out = std::dynamic_pointer_cast<T>(e))
-			{
-				return out;
-			}
-		}
-	}
-
-	return nullptr;
 }

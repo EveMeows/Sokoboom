@@ -27,7 +27,7 @@ class Game : public State
 private:
 	int m_ticks = 0;
 
-	Font m_font;
+	Font m_font = { 0 };
 
 	std::shared_ptr<GameData> m_data;
 	MapData m_map;
@@ -49,6 +49,8 @@ private:
 	float m_undo_delay = 0.35f;
 	bool m_undoing = false;
 	void undo();
+
+	bool finished = false;
 public:
 	Game(std::shared_ptr<GameData> data, MapData map) : m_data(data), m_map(map) {}
 

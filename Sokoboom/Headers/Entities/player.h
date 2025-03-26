@@ -16,6 +16,8 @@ public:
 	std::function<void(Vector2, Direction)> on_player_moved = nullptr;
 	int tyler_the_creator = 0;
 
+	bool locked = false;
+
 	Player();
 
 	void process() override;

@@ -36,14 +36,17 @@ int main()
 	data->maps.push_back(MapData("3", Map(std::filesystem::path("Content/Maps/three.p8m"))));
 	data->maps.push_back(MapData("4", Map(std::filesystem::path("Content/Maps/four.p8m"))));
 	data->maps.push_back(MapData("5", Map(std::filesystem::path("Content/Maps/five.p8m"))));
-	// 5 left
+	data->maps.push_back(MapData("6", Map(std::filesystem::path("Content/Maps/six.p8m"))));
+	data->maps.push_back(MapData("7", Map(std::filesystem::path("Content/Maps/seven.p8m"))));
+	data->maps.push_back(MapData("8", Map(std::filesystem::path("Content/Maps/eight.p8m"))));
+	data->maps.push_back(MapData("9", Map(std::filesystem::path("Content/Maps/nine.p8m"))));
+	data->maps.push_back(MapData("10", Map(std::filesystem::path("Content/Maps/ten.p8m"))));
 
 	data->maps.push_back(MapData("END", Map(std::filesystem::path("Content/Maps/the_end.p8m"))));
 
-	// data->state_handler->set(std::make_unique<Game>(data, data->maps[data->active_map_index]));
 	data->state_handler->set(std::make_unique<Menu>(data));
 
-	RenderTexture2D renderer = LoadRenderTexture(GameData::GAME_SIZE.x, GameData::GAME_SIZE.y);
+	RenderTexture2D renderer = LoadRenderTexture((int)GameData::GAME_SIZE.x, (int)GameData::GAME_SIZE.y);
 	SetTextureFilter(renderer.texture, TEXTURE_FILTER_POINT);
 
 	while (!data->exit)
@@ -93,7 +96,7 @@ int main()
 			// Fucked up screen scaling calculations
 			DrawTexturePro(
 				renderer.texture,
-				Rectangle(0, 0, renderer.texture.width, -renderer.texture.height),
+				Rectangle(0, 0, (float)renderer.texture.width, (float)-renderer.texture.height),
 				Rectangle(
 					(GetScreenWidth() - (GameData::GAME_SIZE.x * scale)) * 0.5f,
 					(GetScreenHeight() - (GameData::GAME_SIZE.y * scale)) * 0.5f,
@@ -111,6 +114,7 @@ int main()
 	data->state_handler->leave();
 	for (MapData map_data : data->maps)
 	{
+		std::cout << "INFO: Removing data from map " << map_data.name << std::endl;
 		map_data.map.leave();
 	}
 

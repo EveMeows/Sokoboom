@@ -10,6 +10,8 @@ Player::Player() : Entity(0)
 
 void Player::process()
 {
+	if (this->locked) return;
+
 	if (IsKeyPressed(KEY_A))
 	{
 		this->position.x -= GameData::TILE_SIZE;

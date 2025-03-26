@@ -25,75 +25,23 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		return;
 	}
 
-	std::shared_ptr<Box> box = this->m_box.lock();
-	if (!box)
-	{
-		std::cerr << "CRITICAL: Failed to get box.\n";
-		return;
-	}
-
 	Vector2 player_grid = Vector2Scale(position, 1.0f / GameData::TILE_SIZE);
-	Vector2 box_grid = Vector2Scale(box->position, 1.0f / GameData::TILE_SIZE);
 
-	// Box moves
-	if (player_grid == box_grid)
+	if (this->finished)
 	{
-		switch (direction)
+		// Reached gate.
+		if (player_grid.x == 9 && (player_grid.y == 8 || player_grid.y == 7))
 		{
-		case Direction::LEFT:
-			if (this->m_map.map.get_at_position(box_grid.x - 1, box_grid.y, SOLID_LAYER) == SOLID_WALL)
-			{
-				player->position.x += GameData::TILE_SIZE;
-				player->tyler_the_creator--;
-				break;
-			}
+			player->locked = true;
 
-			box->position.x -= GameData::TILE_SIZE;
-
-			break;
-
-		case Direction::RIGHT:
-			if (this->m_map.map.get_at_position(box_grid.x + 1, box_grid.y, SOLID_LAYER) == SOLID_WALL)
-			{
-				player->position.x -= GameData::TILE_SIZE;
-				player->tyler_the_creator--;
-				break;
-			}
-
-			box->position.x += GameData::TILE_SIZE;
-
-			break;
-
-		case Direction::UP:
-			if (this->m_map.map.get_at_position(box_grid.x, box_grid.y - 1, SOLID_LAYER) == SOLID_WALL)
-			{
-				player->position.y += GameData::TILE_SIZE;
-				player->tyler_the_creator--;
-				break;
-			}
-
-			box->position.y -= GameData::TILE_SIZE;
-
-			break;
-
-		case Direction::DOWN:
-			if (this->m_map.map.get_at_position(box_grid.x, box_grid.y + 1, SOLID_LAYER) == SOLID_WALL)
-			{
-				player->position.y -= GameData::TILE_SIZE;
-				player->tyler_the_creator--;
-				break;
-			}
-
-			box->position.y += GameData::TILE_SIZE;
-
-			break;
+			// TODO: Super cool cutscene with cute girls
 		}
 	}
 
 	// Player hits wall
 	if (
 		this->m_map.map.get_at_position(
-			player_grid.x, player_grid.y,
+			(int)player_grid.x, (int)player_grid.y,
 			SOLID_LAYER
 		) == SOLID_WALL
 	)
@@ -126,29 +74,98 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		}
 	}
 
-	if (this->m_undos.empty())
+	if (!this->finished)
 	{
-		this->m_undos.push_back(
-			MoveData(player->position, box->position)
-		);
-	}
-	else
-	{
-		MoveData last = this->m_undos[this->m_undos.size() - 1];
-		if (player->position != last.player_position)
+		std::shared_ptr<Box> box = this->m_box.lock();
+		if (!box)
+		{
+			std::cerr << "CRITICAL: Failed to get box.\n";
+			return;
+		}
+
+		Vector2 box_grid = Vector2Scale(box->position, 1.0f / GameData::TILE_SIZE);
+
+		// Box moves
+		if (player_grid == box_grid)
+		{
+			switch (direction)
+			{
+			case Direction::LEFT:
+				if (this->m_map.map.get_at_position((int)box_grid.x - 1, (int)box_grid.y, SOLID_LAYER) == SOLID_WALL)
+				{
+					player->position.x += GameData::TILE_SIZE;
+					player->tyler_the_creator--;
+					break;
+				}
+
+				box->position.x -= GameData::TILE_SIZE;
+
+				break;
+
+			case Direction::RIGHT:
+				if (this->m_map.map.get_at_position((int)box_grid.x + 1, (int)box_grid.y, SOLID_LAYER) == SOLID_WALL)
+				{
+					player->position.x -= GameData::TILE_SIZE;
+					player->tyler_the_creator--;
+					break;
+				}
+
+				box->position.x += GameData::TILE_SIZE;
+
+				break;
+
+			case Direction::UP:
+				if (this->m_map.map.get_at_position((int)box_grid.x, (int)box_grid.y - 1, SOLID_LAYER) == SOLID_WALL)
+				{
+					player->position.y += GameData::TILE_SIZE;
+					player->tyler_the_creator--;
+					break;
+				}
+
+				box->position.y -= GameData::TILE_SIZE;
+
+				break;
+
+			case Direction::DOWN:
+				if (this->m_map.map.get_at_position((int)box_grid.x, (int)box_grid.y + 1, SOLID_LAYER) == SOLID_WALL)
+				{
+					player->position.y -= GameData::TILE_SIZE;
+					player->tyler_the_creator--;
+					break;
+				}
+
+				box->position.y += GameData::TILE_SIZE;
+
+				break;
+			}
+		}
+
+		if (this->m_undos.empty())
 		{
 			this->m_undos.push_back(
 				MoveData(player->position, box->position)
 			);
+		}
+		else
+		{
+			MoveData last = this->m_undos[this->m_undos.size() - 1];
+			if (player->position != last.player_position)
+			{
+				this->m_undos.push_back(
+					MoveData(player->position, box->position)
+				);
+			}
 		}
 	}
 }
 
 void Game::undo()
 {
+	if (this->finished) return;
+
 	if (!this->m_undos.empty())
 	{
-		int last_idx = this->m_undos.size() - 1;
+		int last_idx = (int)this->m_undos.size() - 1;
 		MoveData last = this->m_undos[last_idx];
 
 		std::shared_ptr<Box> box = this->m_box.lock();
@@ -181,9 +198,9 @@ void Game::awake()
 	{
 		std::vector<std::vector<int>> layer = this->m_map.map.layers[i];
 
-		for (size_t row = 0; row < layer.size(); row++)
+		for (int row = 0; row < layer.size(); row++)
 		{
-			for (size_t col = 0; col < layer[row].size(); col++)
+			for (int col = 0; col < layer[row].size(); col++)
 			{
 				if (layer[row][col] == 0) continue;
 
@@ -259,7 +276,11 @@ void Game::awake()
 
 void Game::process()
 {
-	this->m_ticks++;
+	if (!this->finished)
+	{
+		this->m_ticks++;
+	}
+
 	this->m_entities.process();
 
 	if (IsKeyPressed(KEY_R))
@@ -284,7 +305,7 @@ void Game::process()
 			// Remove the last stored movement if its the same position.
 			if (std::shared_ptr<Player> player = this->m_player.lock())
 			{
-				int last_idx = this->m_undos.size() - 1;
+				int last_idx = (int)this->m_undos.size() - 1;
 				MoveData last = this->m_undos[last_idx];
 				if (this->m_undos.size() > 1 && player->position == last.player_position)
 				{
@@ -322,7 +343,7 @@ void Game::process()
 		}
 	}
 
-	if (this->m_ticks == 30)
+	if (this->m_ticks == 30 && !this->finished)
 	{
 		this->m_ticks = 0;
 
@@ -347,14 +368,23 @@ void Game::process()
 		{
 			if (!this->m_switched)
 			{
-				int max = this->m_data->maps.size();
-				this->m_data->active_map_index++;
-
-				if (this->m_data->active_map_index >= max)
+				// The end
+				if (this->m_data->active_map_index == 11)
 				{
-					// TODO: win
+					this->m_entities.remove<Box>();
+
+					this->m_switched = true;
+					this->finished = true;
+
+					// Gate
+					this->m_map.map.set_at_position(9, 8, 0, 0);
+					this->m_map.map.set_at_position(9, 7, 0, 0);
+
 					return;
 				}
+
+				int max = (int)this->m_data->maps.size();
+				this->m_data->active_map_index++;
 
 				this->m_data->state_handler->set(
 					std::make_unique<Game>(
@@ -378,7 +408,7 @@ void Game::render()
 	if (std::shared_ptr<Player> player = this->m_player.lock())
 	{
 		DrawRectangle(
-			0, GameData::GAME_SIZE.y - GameData::GAP, GameData::GAME_SIZE.x, GameData::GAP, GRAY
+			0, (int)GameData::GAME_SIZE.y - GameData::GAP, (int)GameData::GAME_SIZE.x, GameData::GAP, GRAY
 		);
 
 		DrawTextPro(
