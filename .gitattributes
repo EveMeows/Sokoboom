@@ -2,7 +2,7 @@
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
 * text=auto
-Sokoboom/External/* linguist-vendored=true
+Sokoboom/External/* linguist-vendored=false
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
