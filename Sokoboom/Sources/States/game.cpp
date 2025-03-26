@@ -1,6 +1,7 @@
 #include "../../Headers/States/game.h"
-#include "../../Headers/utilities.h"
 
+#include "../../Headers/States/end.h"
+#include "../../Headers/utilities.h"
 #include "../../Headers/data.h"
 
 #include <cmath>
@@ -33,8 +34,9 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		if (player_grid.x == 9 && (player_grid.y == 8 || player_grid.y == 7))
 		{
 			player->locked = true;
+			this->m_data->total_moves += player->tyler_the_creator;
 
-			// TODO: Super cool cutscene with cute girls
+			this->m_data->state_handler->set(std::make_unique<End>(this->m_data));
 		}
 	}
 
@@ -381,6 +383,11 @@ void Game::process()
 					this->m_map.map.set_at_position(9, 7, 0, 0);
 
 					return;
+				}
+
+				if (std::shared_ptr<Player> player = this->m_player.lock())
+				{
+					this->m_data->total_moves += player->tyler_the_creator;
 				}
 
 				int max = (int)this->m_data->maps.size();

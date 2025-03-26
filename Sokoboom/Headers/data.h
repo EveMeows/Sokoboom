@@ -15,6 +15,7 @@ struct MapData
 
 struct GameData
 {
+	int total_moves = 0;
 	int active_map_index = 11;
 	std::vector<MapData> maps;
 

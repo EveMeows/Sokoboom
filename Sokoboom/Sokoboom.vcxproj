@@ -139,6 +139,7 @@
     <ClCompile Include="Sources\Entities\player.cpp" />
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\map.cpp" />
+    <ClCompile Include="Sources\States\end.cpp" />
     <ClCompile Include="Sources\States\game.cpp" />
     <ClCompile Include="Sources\States\menu.cpp" />
   </ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="Headers\Entities\player.h" />
     <ClInclude Include="Headers\Entities\player_direction.h" />
     <ClInclude Include="Headers\map.h" />
+    <ClInclude Include="Headers\States\end.h" />
     <ClInclude Include="Headers\States\game.h" />
     <ClInclude Include="Headers\States\menu.h" />
     <ClInclude Include="Headers\States\state.h" />
