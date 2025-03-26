@@ -27,7 +27,7 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 
 	Vector2 player_grid = Vector2Scale(position, 1.0f / GameData::TILE_SIZE);
 
-	if (this->finished)
+	if (this->m_finished)
 	{
 		// Reached gate.
 		if (player_grid.x == 9 && (player_grid.y == 8 || player_grid.y == 7))
@@ -74,7 +74,7 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		}
 	}
 
-	if (!this->finished)
+	if (!this->m_finished)
 	{
 		std::shared_ptr<Box> box = this->m_box.lock();
 		if (!box)
@@ -161,7 +161,7 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 
 void Game::undo()
 {
-	if (this->finished) return;
+	if (this->m_finished) return;
 
 	if (!this->m_undos.empty())
 	{
@@ -276,7 +276,7 @@ void Game::awake()
 
 void Game::process()
 {
-	if (!this->finished)
+	if (!this->m_finished)
 	{
 		this->m_ticks++;
 	}
@@ -343,7 +343,7 @@ void Game::process()
 		}
 	}
 
-	if (this->m_ticks == 30 && !this->finished)
+	if (this->m_ticks == 30 && !this->m_finished)
 	{
 		this->m_ticks = 0;
 
@@ -374,7 +374,7 @@ void Game::process()
 					this->m_entities.remove<Box>();
 
 					this->m_switched = true;
-					this->finished = true;
+					this->m_finished = true;
 
 					// Gate
 					this->m_map.map.set_at_position(9, 8, 0, 0);

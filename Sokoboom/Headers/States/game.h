@@ -50,7 +50,7 @@ private:
 	bool m_undoing = false;
 	void undo();
 
-	bool finished = false;
+	bool m_finished = false;
 public:
 	Game(std::shared_ptr<GameData> data, MapData map) : m_data(data), m_map(map) {}
 
