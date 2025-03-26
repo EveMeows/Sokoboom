@@ -1,6 +1,7 @@
 #include "../../Headers/States/game.h"
 
 #include "../../Headers/States/end.h"
+#include "../../Headers/States/menu.h"
 #include "../../Headers/utilities.h"
 #include "../../Headers/data.h"
 
@@ -273,11 +274,63 @@ void Game::awake()
 	);
 
 	this->m_font = utilities::load_font_relative(std::filesystem::path("Content/pico-8.ttf"));
-	SetTextureFilter(this->m_font.texture, TEXTURE_FILTER_POINT);
+
+	// Pause UI
+	Vector2 resume_dim = MeasureTextEx(this->m_font, "resume", 10.0f, 0.1f);
+	Button resume = Button(
+		this->m_font,
+		"resume", 10.0f,
+		Vector2(
+			(GameData::GAME_SIZE.x - resume_dim.x) / 2,
+			40
+		)
+	);
+
+	resume.on_click = [this](Button* self) {
+		this->m_paused = false;
+	};
+
+	this->m_buttons.push_back(resume);
+
+	Vector2 menu_dim = MeasureTextEx(this->m_font, "menu", 10.0f, 0.1f);
+	Button menu = Button(
+		this->m_font,
+		"menu", 10.0f,
+		Vector2(
+			(GameData::GAME_SIZE.x - menu_dim.x) / 2,
+			50
+		)
+	);
+
+	menu.on_click = [this](Button* self) {
+		this->m_data->active_map_index = 0;
+		this->m_data->total_moves = 0;
+
+		this->m_data->state_handler->set(
+			std::make_unique<Menu>(this->m_data)
+		);
+	};
+
+	this->m_buttons.push_back(menu);
 }
 
 void Game::process()
 {
+	if (IsKeyPressed(KEY_ESCAPE))
+	{
+		this->m_paused = !this->m_paused;
+	}
+
+	if (this->m_paused)
+	{
+		for (Button& btn : this->m_buttons)
+		{
+			btn.process(this->m_data->virtual_mouse);
+		}
+
+		return;
+	}
+
 	if (!this->m_finished)
 	{
 		this->m_ticks++;
@@ -442,6 +495,31 @@ void Game::render()
 	{
 		std::cerr << "CRITICAL: Failed to get player.\n";
 		return;
+	}
+
+	if (this->m_paused)
+	{
+		DrawRectangleV(
+			Vector2Zero(), GameData::GAME_SIZE,
+			Fade(BLACK, 0.7f)
+		);
+
+		Vector2 dim = MeasureTextEx(this->m_font, "PAUSED", 10.0f, 0.1f);
+		DrawTextPro(
+			this->m_font,
+			"PAUSED",
+			Vector2(
+				(GameData::GAME_SIZE.x - dim.x) / 2,
+				5
+			),
+			Vector2Zero(),
+			0, 10.0f, 0.1f, WHITE
+		);
+
+		for (Button& btn : this->m_buttons)
+		{
+			btn.render();
+		}
 	}
 }
 

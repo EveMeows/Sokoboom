@@ -7,6 +7,7 @@
 #include "state.h"
 #include "../data.h"
 #include "../map.h"
+#include "../button.h"
 
 #include "../Entities/box.h"
 #include "../Entities/goal.h"
@@ -51,6 +52,9 @@ private:
 	void undo();
 
 	bool m_finished = false;
+
+	bool m_paused = false;
+	std::vector<Button> m_buttons;
 public:
 	Game(std::shared_ptr<GameData> data, MapData map) : m_data(data), m_map(map) {}
 

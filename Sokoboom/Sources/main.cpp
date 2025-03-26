@@ -20,7 +20,7 @@ int main()
 {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(800, 600, "Sokoboom");
-	// SetTargetFPS(60);
+	SetExitKey(KEY_NULL);
 
 	std::cout << "INFO: Tile size: " << GameData::TILE_SIZE << "\n";
 	std::cout << "INFO: Game resolution: " << GameData::GAME_SIZE.x << ", " << GameData::GAME_SIZE.y << "\n";
