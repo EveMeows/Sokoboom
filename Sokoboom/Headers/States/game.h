@@ -17,7 +17,7 @@
 
 #include <raylib.h>
 
-static struct MoveData
+struct MoveData
 {
 	Vector2 player_position;
 	Vector2 box_position;
