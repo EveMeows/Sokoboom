@@ -7,6 +7,9 @@ Made with my own TileMap Editor, [PicoMapper](https://github.com/EveMeows/PicoMa
 
 ![showcase](./Github/showcase.png)
 
+## Credits
+The font used throughout the game is made by Zep and the Pico8 team.
+
 ## Installation
 
 ### Using the releases page (recommended)
@@ -39,3 +42,6 @@ Once the editor is done loading, and cloning the repository, you should see an e
 ![Run](./Github/Installation/run.png)
 
 Click it, and, after the app compiles, you're done! You should be able to run the game.
+
+## License
+MIT
