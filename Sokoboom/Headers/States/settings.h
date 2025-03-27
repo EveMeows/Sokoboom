@@ -1,25 +1,26 @@
 #pragma once
 
 #include "state.h"
-#include "../button.h"
 #include "../data.h"
 #include "../utilities.h"
+#include "../button.h"
+
+#include <memory>
+#include <vector>
+#include <filesystem>
 
 #include <raylib.h>
 #include <raymath.h>
 
-#include <filesystem>
-#include <memory>
-
-class End : public State
+class Settings : public State
 {
 private:
-	Font m_font;
 	std::vector<Button> m_buttons;
 
+	Font m_font = { 0 };
 	std::shared_ptr<GameData> m_data;
 public:
-	End(std::shared_ptr<GameData> data) : m_data(data) 
+	Settings(std::shared_ptr<GameData> data) : m_data(data)
 	{
 		this->m_font = utilities::load_font_relative(std::filesystem::path("Content/pico-8.ttf"));
 	};
@@ -30,7 +31,7 @@ public:
 	void leave() override;
 };
 
-inline void End::leave()
+inline void Settings::leave()
 {
 	UnloadFont(this->m_font);
 }

@@ -2,6 +2,7 @@
 
 #include "../../Headers/utilities.h"
 #include "../../Headers/States/game.h"
+#include "../../Headers/States/settings.h"
 
 #include <filesystem>
 #include <format>
@@ -47,7 +48,9 @@ void Menu::awake()
 	);
 
 	options.on_click = [this](Button* self) {
-		// TODO
+		this->m_data->state_handler->set(
+			std::make_unique<Settings>(this->m_data)
+		);
 	};
 
 	this->m_buttons.push_back(options);
@@ -97,9 +100,4 @@ void Menu::render()
 	{
 		btn.render();
 	}
-}
-
-void Menu::leave()
-{
-	UnloadFont(this->m_font);
 }

@@ -5,6 +5,7 @@
 #include "../button.h"
 
 #include <vector>
+#include <memory>
 
 #include <raylib.h>
 
@@ -23,3 +24,8 @@ public:
 	void render() override;
 	void leave() override;
 };
+
+inline void Menu::leave()
+{
+	UnloadFont(this->m_font);
+}

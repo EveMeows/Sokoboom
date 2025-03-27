@@ -2,8 +2,6 @@
 
 #include "../Controllers/entity_controller.h"
 
-#include <memory>
-
 class State
 {
 public:

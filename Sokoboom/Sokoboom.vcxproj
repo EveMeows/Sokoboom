@@ -142,6 +142,7 @@
     <ClCompile Include="Sources\States\end.cpp" />
     <ClCompile Include="Sources\States\game.cpp" />
     <ClCompile Include="Sources\States\menu.cpp" />
+    <ClCompile Include="Sources\States\settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\button.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Headers\States\end.h" />
     <ClInclude Include="Headers\States\game.h" />
     <ClInclude Include="Headers\States\menu.h" />
+    <ClInclude Include="Headers\States\settings.h" />
     <ClInclude Include="Headers\States\state.h" />
     <ClInclude Include="Headers\utilities.h" />
   </ItemGroup>
