@@ -23,7 +23,7 @@ If you wish to make modifications, or even contribute to the game, you can compi
 First, you must download Visual Studio 2022. Head over to the [official site](https://visualstudio.microsoft.com/), and click "Download Visual Studio".
 
 Run "VisualStudioSetup.exe". Once the setup finishes, you will see a window akin to the one below.
-![Installer](./Github/Installation/Installer.png)
+![Installer](./Github/Installation/installer.png)
 Click ".NET desktop development" then at the bottom right corner, click the button with the Administrator Shield (it may have different text).
 
 After the installer is done, you should be able to just start Visual Studio!
