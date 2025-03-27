@@ -24,7 +24,7 @@ First, you must download Visual Studio 2022. Head over to the [official site](ht
 
 Run "VisualStudioSetup.exe". Once the setup finishes, you will see a window akin to the one below.
 ![Installer](./Github/Installation/installer.png)
-Click ".NET desktop development" then at the bottom right corner, click the button with the Administrator Shield (it may have different text).
+Click "Desktop development with C++" then at the bottom right corner, click the button with the Administrator Shield (it may have different text).
 
 After the installer is done, you should be able to just start Visual Studio!
 
