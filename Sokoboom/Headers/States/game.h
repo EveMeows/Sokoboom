@@ -30,6 +30,10 @@ private:
 
 	Font m_font = { 0 };
 
+	Sound m_move;
+	Sound m_next;
+	Sound m_explode;
+
 	std::shared_ptr<GameData> m_data;
 	MapData m_map;
 

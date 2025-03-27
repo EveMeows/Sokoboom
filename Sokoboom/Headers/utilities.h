@@ -32,4 +32,17 @@ namespace utilities
 
 		return LoadFontEx(legacy.c_str(), 100, 0, 0);
 	}
+
+	inline Sound load_sound_relative(const std::filesystem::path& path)
+	{
+		std::filesystem::path full = GetApplicationDirectory() / path;
+		std::string legacy = full.string();
+
+		if (!FileExists(legacy.c_str()))
+		{
+			return { 0 };
+		}
+
+		return LoadSound(legacy.c_str());
+	}
 }

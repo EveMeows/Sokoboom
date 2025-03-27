@@ -34,6 +34,21 @@ public:
 		);
 	}
 
+	void set_text(std::string new_text)
+	{
+		this->m_text = new_text;
+
+		Vector2 dim = MeasureTextEx(
+			this->m_font, this->m_text.c_str(),
+			this->m_size, 0.1f
+		);
+
+		this->m_bounds = Rectangle(
+			this->m_position.x, this->m_position.y,
+			dim.x, dim.y
+		);
+	}
+
 	void render();
 	void process(Vector2 mouse);
 	void leave();

@@ -22,11 +22,22 @@ int main()
 	InitWindow(800, 600, "Sokoboom");
 	SetExitKey(KEY_NULL);
 
-	std::cout << "INFO: Tile size: " << GameData::TILE_SIZE << "\n";
-	std::cout << "INFO: Game resolution: " << GameData::GAME_SIZE.x << ", " << GameData::GAME_SIZE.y << "\n";
+	InitAudioDevice();
 
 	std::shared_ptr<GameData> data = std::make_shared<GameData>();
-	data->state_handler;
+
+	// Load settings
+	std::filesystem::path path = GetApplicationDirectory() / std::filesystem::path("Content/settings.json");
+	std::ifstream f(path);
+	if (f.is_open())
+	{
+		nlohmann::json json = nlohmann::json::parse(f);
+
+		data->mute_sfx = json["mute_sfx"];
+		data->mute_move = json["mute_move"];
+
+		f.close();
+	}
 
 	// Create maps
 	data->maps.push_back(MapData("INTRO", Map(std::filesystem::path("Content/Maps/intro.p8m"))));
@@ -48,6 +59,12 @@ int main()
 
 	RenderTexture2D renderer = LoadRenderTexture((int)GameData::GAME_SIZE.x, (int)GameData::GAME_SIZE.y);
 	SetTextureFilter(renderer.texture, TEXTURE_FILTER_POINT);
+
+	std::cout << "INFO: Tile size: " << GameData::TILE_SIZE << "\n";
+	std::cout << "INFO: Game resolution: " << GameData::GAME_SIZE.x << ", " << GameData::GAME_SIZE.y << "\n";
+
+	std::cout << "INFO: Muted SFX: " << data->mute_sfx << "\n";
+	std::cout << "INFO: Muted Move: " << data->mute_move << "\n";
 
 	while (!data->exit)
 	{
@@ -107,7 +124,8 @@ int main()
 		}
 		EndDrawing();
 	}
-
+	
+	CloseAudioDevice();
 	CloseWindow();
 
 	// Release data

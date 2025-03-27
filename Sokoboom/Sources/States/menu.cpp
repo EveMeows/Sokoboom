@@ -13,8 +13,9 @@ Menu::Menu(std::shared_ptr<GameData> data) : m_data(data)
 {
 	this->m_font = utilities::load_font_relative(std::filesystem::path("Content/pico-8.ttf"));
 	SetTextureFilter(this->m_font.texture, TEXTURE_FILTER_POINT);
-}
 
+	this->m_click = utilities::load_sound_relative(std::filesystem::path("Content/Audio/click.wav"));
+}
 
 // Build UI here since `this` will be incomplete in Menu::Menu
 void Menu::awake()
@@ -30,6 +31,8 @@ void Menu::awake()
 	);
 
 	play.on_click = [this](Button* self) {
+		if (!this->m_data->mute_sfx) PlaySound(this->m_click);
+
 		this->m_data->state_handler->set(
 			std::make_unique<Game>(this->m_data, this->m_data->maps[this->m_data->active_map_index])
 		);
@@ -48,6 +51,8 @@ void Menu::awake()
 	);
 
 	options.on_click = [this](Button* self) {
+		if (!this->m_data->mute_sfx) PlaySound(this->m_click);
+
 		this->m_data->state_handler->set(
 			std::make_unique<Settings>(this->m_data)
 		);
@@ -66,6 +71,8 @@ void Menu::awake()
 	);
 
 	exit.on_click = [this](Button* self) {
+		if (!this->m_data->mute_sfx) PlaySound(this->m_click);
+
 		this->m_data->exit = true;
 	};
 

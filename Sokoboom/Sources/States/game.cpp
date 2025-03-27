@@ -27,6 +27,9 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 		return;
 	}
 
+	bool hit_corner = false;
+	bool hit_box = false;
+
 	Vector2 player_grid = Vector2Scale(position, 1.0f / GameData::TILE_SIZE);
 
 	if (this->m_finished)
@@ -75,6 +78,8 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 
 			break;
 		}
+
+		hit_corner = true;
 	}
 
 	if (!this->m_finished)
@@ -98,6 +103,8 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 				{
 					player->position.x += GameData::TILE_SIZE;
 					player->tyler_the_creator--;
+
+					hit_box = true;
 					break;
 				}
 
@@ -110,6 +117,8 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 				{
 					player->position.x -= GameData::TILE_SIZE;
 					player->tyler_the_creator--;
+
+					hit_box = true;
 					break;
 				}
 
@@ -122,6 +131,8 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 				{
 					player->position.y += GameData::TILE_SIZE;
 					player->tyler_the_creator--;
+
+					hit_box = true;
 					break;
 				}
 
@@ -134,6 +145,8 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 				{
 					player->position.y -= GameData::TILE_SIZE;
 					player->tyler_the_creator--;
+
+					hit_box = true;
 					break;
 				}
 
@@ -159,6 +172,11 @@ void Game::on_player_moved(Vector2 position, Direction direction)
 				);
 			}
 		}
+	}
+
+	if (!hit_box && !hit_corner)
+	{
+		if (!this->m_data->mute_sfx && !this->m_data->mute_move) PlaySound(this->m_move);
 	}
 }
 
@@ -197,6 +215,11 @@ void Game::undo()
 
 void Game::awake()
 {
+	// Sound 
+	this->m_move = utilities::load_sound_relative(std::filesystem::path("Content/Audio/move.wav"));
+	this->m_next = utilities::load_sound_relative(std::filesystem::path("Content/Audio/next.wav"));
+	this->m_explode = utilities::load_sound_relative(std::filesystem::path("Content/Audio/explosion.wav"));
+
 	for (int i = 0; i < this->m_map.map.layers.size(); i++)
 	{
 		std::vector<std::vector<int>> layer = this->m_map.map.layers[i];
@@ -435,6 +458,8 @@ void Game::process()
 					this->m_map.map.set_at_position(9, 8, 0, 0);
 					this->m_map.map.set_at_position(9, 7, 0, 0);
 
+					if (!this->m_data->mute_sfx) PlaySound(this->m_explode);
+
 					return;
 				}
 
@@ -442,6 +467,8 @@ void Game::process()
 				{
 					this->m_data->total_moves += player->tyler_the_creator;
 				}
+
+				if (!this->m_data->mute_sfx) PlaySound(this->m_next);
 
 				int max = (int)this->m_data->maps.size();
 				this->m_data->active_map_index++;
@@ -530,6 +557,10 @@ void Game::leave()
 	// This breaks the game if you press R
 	// for some reason
 	// this->m_map.map.leave();
+
+	UnloadSound(this->m_next);
+	UnloadSound(this->m_move);
+	UnloadSound(this->m_explode);
 
 	UnloadFont(this->m_font);
 }

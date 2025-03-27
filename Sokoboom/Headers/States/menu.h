@@ -12,7 +12,9 @@
 class Menu : public State
 {
 private:
-	Font m_font;
+	Font m_font = { 0 };
+	Sound m_click = { 0 };
+
 	std::shared_ptr<GameData> m_data;
 
 	std::vector<Button> m_buttons;
@@ -28,4 +30,5 @@ public:
 inline void Menu::leave()
 {
 	UnloadFont(this->m_font);
+	UnloadSound(this->m_click);
 }

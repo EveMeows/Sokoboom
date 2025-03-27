@@ -15,8 +15,11 @@ struct MapData
 
 struct GameData
 {
+	bool mute_move = false;
+	bool mute_sfx = false;
+
 	int total_moves = 0;
-	int active_map_index = 0;
+	int active_map_index = 11;
 	std::vector<MapData> maps;
 
 	static constexpr int GAP = 7;

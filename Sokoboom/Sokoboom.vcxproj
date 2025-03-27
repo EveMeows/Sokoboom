@@ -170,4 +170,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\settings.json" />
+  </ItemGroup>
 </Project>
