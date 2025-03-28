@@ -44,4 +44,4 @@ Once the editor is done loading, and cloning the repository, you should see an e
 Click it, and, after the app compiles, you're done! You should be able to run the game.
 
 ## License
-MIT
+GPL 3.0
